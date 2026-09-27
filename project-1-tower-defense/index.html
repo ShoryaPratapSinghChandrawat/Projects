@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Neon Bastion - Tower Defense</title>
+  <meta name="description" content="Neon Bastion - a neon sci-fi tower defense game made with HTML5 Canvas and JavaScript.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="stage">
+    <!-- ======================= PLAY AREA ======================= -->
+    <div id="play-area">
+      <canvas id="game" width="1280" height="720"></canvas>
+      <div id="toast"></div>
+
+      <!-- MAIN MENU -->
+      <section class="overlay" id="menu-main">
+        <div class="menu-center">
+          <div class="logo">
+            <div class="logo-top">NEON</div>
+            <div class="logo-bottom">BASTION</div>
+            <div class="logo-sub">TOWER DEFENSE</div>
+          </div>
+          <div class="menu-buttons">
+            <button class="btn primary big" data-action="play"><i class="ico-play"></i>PLAY</button>
+            <button class="btn" data-action="howto">HOW TO PLAY</button>
+            <button class="btn" data-action="settings">SETTINGS</button>
+            <button class="btn" data-action="credits">CREDITS</button>
+          </div>
+          <div class="menu-hint">Click anywhere to enable sound</div>
+        </div>
+      </section>
+
+      <!-- LEVEL SELECT -->
+      <section class="overlay hidden" id="menu-levels">
+        <div class="panel wide">
+          <h2>SELECT SECTOR</h2>
+          <div class="mode-toggle">
+            <button class="chip active" data-mode="campaign">CAMPAIGN</button>
+            <button class="chip" data-mode="endless">ENDLESS</button>
+          </div>
+          <div id="level-cards" class="level-cards"></div>
+          <div class="panel-foot">
+            <button class="btn" data-action="back"><i class="ico-back"></i>BACK</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW TO PLAY -->
+      <section class="overlay hidden" id="menu-howto">
+        <div class="panel wide scroll">
+          <h2>HOW TO PLAY</h2>
+          <div class="howto-grid">
+            <div>
+              <h3>Goal</h3>
+              <p>Enemies march along the glowing path towards your <b>core</b>. Every enemy that reaches it costs lives. Survive all waves to win the sector.</p>
+              <h3>Controls</h3>
+              <ul class="keys">
+                <li><kbd>1</kbd>-<kbd>6</kbd> or click a tower in the shop to pick it, then click a free tile to build</li>
+                <li><kbd>Shift</kbd> + click keeps building the same tower</li>
+                <li>Click a tower to select it: <kbd>U</kbd> upgrade, <kbd>S</kbd> sell, <kbd>T</kbd> change targeting</li>
+                <li><kbd>Space</kbd> start / call next wave (early = bonus gold)</li>
+                <li><kbd>F</kbd> game speed &nbsp; <kbd>A</kbd> auto-wave &nbsp; <kbd>P</kbd> / <kbd>Esc</kbd> pause &nbsp; Right-click cancels</li>
+              </ul>
+              <h3>Tips</h3>
+              <ul>
+                <li>Build near corners, where towers can cover the path twice.</li>
+                <li>Mix damage types: splash for swarms, Tesla against shields, Rail against armor.</li>
+                <li>Every 10th wave a <b>Titan</b> boss appears. Be ready!</li>
+              </ul>
+            </div>
+            <div>
+              <h3>Towers</h3>
+              <div id="howto-towers" class="howto-list"></div>
+              <h3>Enemies</h3>
+              <div id="howto-enemies" class="howto-list"></div>
+            </div>
+          </div>
+          <div class="panel-foot">
+            <button class="btn" data-action="back"><i class="ico-back"></i>BACK</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="overlay hidden" id="menu-settings">
+        <div class="panel">
+          <h2>SETTINGS</h2>
+          <div class="setting">
+            <label for="set-music">Music volume</label>
+            <input type="range" id="set-music" min="0" max="1" step="0.05">
+          </div>
+          <div class="setting">
+            <label for="set-sfx">Sound effects</label>
+            <input type="range" id="set-sfx" min="0" max="1" step="0.05">
+          </div>
+          <div class="setting">
+            <label>Graphics quality</label>
+            <div class="seg" id="set-quality">
+              <button class="chip" data-v="high">HIGH</button>
+              <button class="chip" data-v="low">LOW</button>
+            </div>
+          </div>
+          <div class="setting">
+            <label>Screen shake</label>
+            <button class="chip toggle" id="set-shake">ON</button>
+          </div>
+          <div class="setting">
+            <label>Floating gold text</label>
+            <button class="chip toggle" id="set-texts">ON</button>
+          </div>
+          <div class="setting">
+            <label>Save data</label>
+            <button class="chip danger" id="set-reset">RESET PROGRESS</button>
+          </div>
+          <div class="panel-foot">
+            <button class="btn" data-action="back"><i class="ico-back"></i>BACK</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CREDITS -->
+      <section class="overlay hidden" id="menu-credits">
+        <div class="panel">
+          <h2>CREDITS</h2>
+          <p class="center">Design &amp; programming<br><b class="accent">Shorya Pratap Singh Chandrawat</b></p>
+          <p class="center small">Built from scratch with HTML5 Canvas, JavaScript and the Web Audio API.<br>No game engine, no images, no sound files: everything is drawn and synthesised in code.</p>
+          <div class="panel-foot">
+            <button class="btn" data-action="back"><i class="ico-back"></i>BACK</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAUSE -->
+      <section class="overlay hidden dim" id="menu-pause">
+        <div class="panel narrow">
+          <h2>PAUSED</h2>
+          <div class="menu-buttons">
+            <button class="btn primary" data-action="resume"><i class="ico-play"></i>RESUME</button>
+            <button class="btn" data-action="restart">RESTART</button>
+            <button class="btn" data-action="settings">SETTINGS</button>
+            <button class="btn" data-action="quit">QUIT TO MENU</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONFIRM -->
+      <section class="overlay hidden dim" id="menu-confirm">
+        <div class="panel narrow">
+          <h2 id="confirm-title">ARE YOU SURE?</h2>
+          <p class="center" id="confirm-text"></p>
+          <div class="menu-buttons row">
+            <button class="btn danger" id="confirm-yes">YES</button>
+            <button class="btn" id="confirm-no">NO</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAME OVER / VICTORY -->
+      <section class="overlay hidden dim" id="menu-end">
+        <div class="panel narrow end-panel">
+          <h2 id="end-title">VICTORY</h2>
+          <div id="end-stars" class="stars"></div>
+          <div class="end-stats">
+            <div><span>Waves survived</span><b id="end-waves">0</b></div>
+            <div><span>Enemies destroyed</span><b id="end-kills">0</b></div>
+            <div><span>Score</span><b id="end-score">0</b></div>
+          </div>
+          <div id="end-best" class="end-best hidden">NEW RECORD!</div>
+          <div class="menu-buttons">
+            <button class="btn primary" data-action="retry">RETRY</button>
+            <button class="btn" id="btn-endless" data-action="endless">CONTINUE IN ENDLESS</button>
+            <button class="btn" data-action="levels">SECTOR SELECT</button>
+            <button class="btn" data-action="menu">MAIN MENU</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ======================= SIDEBAR ======================= -->
+    <aside id="sidebar">
+      <!-- menu mode -->
+      <div id="sb-menu">
+        <div class="sb-logo">NEON<span>BASTION</span></div>
+        <div class="sb-title">RECORDS</div>
+        <div id="records" class="records"></div>
+        <div class="sb-title">FEATURES</div>
+        <ul class="features">
+          <li>4 sectors, 4 difficulties</li>
+          <li>6 towers with 3 upgrade levels</li>
+          <li>9 enemy types + Titan bosses</li>
+          <li>Campaign &amp; Endless modes</li>
+          <li>Synthesised music &amp; sound</li>
+        </ul>
+        <div class="sb-version">v1.0 &middot; HTML5 Canvas</div>
+      </div>
+
+      <!-- game mode -->
+      <div id="sb-game" class="hidden">
+        <div class="sb-stats">
+          <div class="stat" title="Lives"><span class="ico"><i class="ico-heart"></i></span><span id="hud-lives">20</span></div>
+          <div class="stat" title="Gold"><span class="ico"><i class="gem"></i></span><span id="hud-gold">0</span></div>
+          <div class="stat" title="Wave"><span class="lbl">WAVE</span><span id="hud-wave">0</span></div>
+          <div class="stat" title="Score"><span class="lbl">SCORE</span><span id="hud-score">0</span></div>
+        </div>
+        <div class="sb-title">BUILD <span class="sb-map" id="hud-map"></span></div>
+        <div id="shop" class="shop"></div>
+
+        <div id="info" class="info">
+          <div id="info-hint">
+            <div id="hint-title" class="info-title">Pick a tower</div>
+            <div id="hint-desc" class="info-desc">Select a tower from the shop (or press 1-6), then click a free tile to build it.</div>
+            <div id="hint-stats" class="info-stats"></div>
+          </div>
+          <div id="info-sel" class="hidden">
+            <div class="sel-head">
+              <canvas id="sel-icon" width="88" height="88"></canvas>
+              <div>
+                <div id="sel-name" class="info-title">Tower</div>
+                <div id="sel-level" class="sel-level">LEVEL 1</div>
+              </div>
+            </div>
+            <div class="info-stats" id="sel-stats"></div>
+            <button class="btn small full" id="btn-target">TARGET: FIRST</button>
+            <div class="row2">
+              <button class="btn small good" id="btn-upgrade">UPGRADE</button>
+              <button class="btn small warn" id="btn-sell">SELL</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sb-wave">
+          <div class="next-label">NEXT WAVE</div>
+          <div id="next-preview" class="next-preview"></div>
+          <button id="btn-wave" class="btn primary full"><i class="ico-play"></i>START WAVE 1</button>
+          <div class="ctrl-row">
+            <button id="btn-speed" class="btn small" title="Game speed (F)">1&times;</button>
+            <button id="btn-auto" class="btn small" title="Automatically start the next wave">AUTO</button>
+            <button id="btn-pause" class="btn small" title="Pause (P)"><i class="ico-pause"></i></button>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="rotate-hint">Rotate your device to landscape for the best experience</div>
+
+  <script src="js/utils.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/entities.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
