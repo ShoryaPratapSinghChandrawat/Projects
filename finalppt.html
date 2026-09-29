@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weave · PS02 — When Systems Don't Understand Each Other</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--bg:#07100e;--panel:#0c1915;--edge:#28453a;--text:#edf6ef;--muted:#93a99f;--lime:#ccfa69;--mint:#61e2bf;--red:#ff786d;--amber:#ffb375;--blue:#88b6ff;--pink:#ed76cb}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif}
+#fx{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.vignette{position:fixed;inset:0;z-index:1;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,transparent 35%,#040907cc 100%)}
+#stage{position:fixed;left:50%;top:50%;width:1920px;height:1080px;transform-origin:center;z-index:2}
+.slide{position:absolute;inset:0;padding:90px 130px;opacity:0;visibility:hidden;transition:opacity .7s ease,visibility .7s;display:flex;flex-direction:column;justify-content:center}
+.slide.active{opacity:1;visibility:visible}
+.slide.leaving{visibility:visible}
+/* ---------- entrance animations ---------- */
+.a{opacity:0}
+.slide.active .a{animation:rise .85s cubic-bezier(.2,.8,.2,1) var(--d,0s) forwards}
+.slide.active .a.zoom{animation-name:zoom}
+.slide.active .a.left{animation-name:fromLeft}
+.slide.active .a.right{animation-name:fromRight}
+.slide.active .a.fade{animation-name:fade}
+@keyframes rise{from{opacity:0;transform:translateY(46px)}to{opacity:1;transform:none}}
+@keyframes zoom{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes fromLeft{from{opacity:0;transform:translateX(-90px)}to{opacity:1;transform:none}}
+@keyframes fromRight{from{opacity:0;transform:translateX(90px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+/* ---------- type ---------- */
+.kicker{font:500 24px 'DM Mono',monospace;letter-spacing:5px;color:var(--lime);margin-bottom:22px;text-transform:uppercase}
+.h1{font-size:104px;font-weight:800;letter-spacing:-4px;line-height:1.02}
+.h2{font-size:70px;font-weight:800;letter-spacing:-2.5px;line-height:1.08;margin-bottom:26px}
+.lead{font-size:34px;line-height:1.55;color:#b9cabf;max-width:1250px}
+.lime{color:var(--lime)}.mint{color:var(--mint)}.red{color:var(--red)}.amber{color:var(--amber)}.muted{color:var(--muted)}
+.grad{background:linear-gradient(100deg,var(--lime),var(--mint) 45%,#fff 55%,var(--lime));background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:-250% 0}}
+.tagline{font:500 22px 'DM Mono',monospace;color:var(--muted);letter-spacing:2px}
+.card{background:linear-gradient(145deg,#112219cc,#0b1712cc);border:1px solid var(--edge);border-radius:26px;padding:34px 36px;backdrop-filter:blur(6px);box-shadow:0 20px 60px #0006}
+.card h3{font-size:36px;font-weight:800;margin-bottom:12px}
+.card p,.card li{font-size:27px;line-height:1.5;color:#b9cabf}
+.card li{margin-left:26px}
+.chip{display:inline-block;font:500 23px 'DM Mono',monospace;padding:9px 18px;border:1px solid var(--edge);border-radius:999px;color:#c8d8cc;background:#0b1712;margin:6px 8px 6px 0}
+.row{display:flex;gap:28px}.col{flex:1}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.big{font-size:88px;font-weight:800;letter-spacing:-3px;color:var(--lime);line-height:1}
+.unit{font:500 24px 'DM Mono',monospace;color:var(--muted);letter-spacing:2px;margin-top:10px}
+.ico{font-size:54px;margin-bottom:12px;display:block}
+.note-tag{position:absolute;left:130px;bottom:52px;font:500 19px 'DM Mono',monospace;color:var(--amber);letter-spacing:1.5px}
+/* ---------- chrome ---------- */
+#bar{position:fixed;left:0;top:0;height:4px;background:linear-gradient(90deg,var(--lime),var(--mint));z-index:20;width:0;transition:width .5s;box-shadow:0 0 14px var(--lime)}
+#dots{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:9px;z-index:20}
+#dots button{width:11px;height:11px;border-radius:50%;border:0;background:#2b4638;cursor:pointer;transition:.3s;padding:0}
+#dots button.on{background:var(--lime);width:34px;border-radius:8px;box-shadow:0 0 12px var(--lime)}
+#count{position:fixed;right:22px;bottom:12px;font:500 13px 'DM Mono',monospace;color:var(--muted);z-index:20}
+.nav{position:fixed;top:50%;z-index:20;width:52px;height:52px;border-radius:50%;background:#0d1a14cc;border:1px solid var(--edge);color:var(--lime);font-size:22px;cursor:pointer;transform:translateY(-50%);opacity:.0;transition:.3s}
+body:hover .nav{opacity:.7}.nav:hover{opacity:1!important;border-color:var(--lime)}
+#prev{left:14px}#next{right:14px}
+#help{position:fixed;left:16px;bottom:12px;font:500 12px 'DM Mono',monospace;color:#5d7469;z-index:20}
+#notes{position:fixed;left:50%;bottom:44px;transform:translate(-50%,20px);width:min(900px,92vw);background:#0b1712f2;border:1px solid var(--lime);border-radius:14px;padding:16px 20px;font-size:16px;line-height:1.6;color:#d7e4da;z-index:30;opacity:0;pointer-events:none;transition:.3s}
+#notes.show{opacity:1;transform:translate(-50%,0)}
+#notes b{color:var(--lime);font:500 12px 'DM Mono',monospace;letter-spacing:2px;display:block;margin-bottom:6px}
+/* ---------- S1 title ---------- */
+.orbit{position:absolute;right:60px;top:50%;width:820px;height:820px;transform:translateY(-50%)}
+.orbit i{position:absolute;left:50%;top:50%;border:1.5px solid #2c4d3e;border-radius:50%;transform:translate(-50%,-50%)}
+.orbit i:nth-child(1){width:300px;height:300px;border-color:#61e2bf55}.orbit i:nth-child(2){width:520px;height:520px}.orbit i:nth-child(3){width:760px;height:760px;border-style:dashed}
+.orbit .sun{position:absolute;left:50%;top:50%;width:120px;height:120px;margin:-60px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f5ffd6,#ccfa69 35%,#1d6b4d 78%);box-shadow:0 0 90px #ccfa6988;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{50%{transform:scale(.9);box-shadow:0 0 50px #ccfa6966}}
+.spin{position:absolute;left:50%;top:50%;width:0;height:0;animation:spin var(--t) linear infinite}
+.spin b{position:absolute;left:var(--r);top:-22px;width:44px;height:44px;border-radius:50%;background:#0d1a14;border:2px solid var(--c);display:grid;place-items:center;font-size:20px;box-shadow:0 0 18px var(--c);animation:spin var(--t) linear infinite reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* ---------- S2 three worlds ---------- */
+.world .head{display:flex;align-items:center;gap:16px;margin-bottom:16px}.world .head span{font-size:52px}
+.float{animation:bob 4s ease-in-out infinite}.float:nth-child(2n){animation-delay:-1.3s}.float:nth-child(3n){animation-delay:-2.6s}
+@keyframes bob{50%{transform:translateY(-8px)}}
+.callout{margin-top:38px;font-size:44px;font-weight:700;letter-spacing:-1px;line-height:1.3}
+/* ---------- S3 story ---------- */
+.road{position:relative;height:150px;margin:90px 0 10px}
+.road:before{content:'';position:absolute;left:0;right:0;top:64px;height:0;border-top:5px dashed #3c6350}
+.stop{position:absolute;top:34px;width:60px;height:60px;border-radius:50%;background:#0c1915;border:2px solid var(--mint);display:grid;place-items:center;font-size:28px}
+.stop small{position:absolute;top:70px;left:50%;transform:translateX(-50%);white-space:nowrap;font:500 19px 'DM Mono',monospace;color:var(--muted)}
+.bus{position:absolute;top:14px;left:0;font-size:60px;animation:drive 9s ease-in-out infinite;filter:drop-shadow(0 0 14px #61e2bf)}
+@keyframes drive{0%{left:60px}70%,100%{left:calc(100% - 130px)}}
+.call{position:absolute;right:70px;top:-78px;background:var(--lime);color:#122016;border-radius:22px;padding:18px 30px;font-size:30px;font-weight:800;box-shadow:0 0 50px #ccfa6966;transform-origin:right bottom}
+.slide.active .call{animation:pop .7s cubic-bezier(.2,1.6,.3,1) 3.4s both,wob 1.2s ease-in-out 4.2s infinite}
+@keyframes pop{from{opacity:0;transform:scale(.2) rotate(-8deg)}to{opacity:1;transform:none}}
+@keyframes wob{50%{transform:rotate(-2deg) scale(1.03)}}
+.stamp{display:inline-block;border:6px solid var(--red);color:var(--red);font:800 56px Manrope;padding:6px 26px;border-radius:14px;transform:rotate(-6deg);letter-spacing:4px}
+.slide.active .stamp{animation:stamp .5s cubic-bezier(.2,1.8,.3,1) 3s both}
+@keyframes stamp{from{opacity:0;transform:rotate(-6deg) scale(3)}to{opacity:1;transform:rotate(-6deg)}}
+/* ---------- S4/S5 hub ---------- */
+#hubA,#hubB{width:100%;height:100%}
+.hubwrap{position:relative;width:820px;height:760px;flex:none}
+.hubtxt{flex:1}
+.brk{stroke:#ff786d;stroke-width:3;stroke-dasharray:14 16;fill:none;animation:flick 2.2s steps(2) infinite}
+@keyframes flick{0%,100%{opacity:.9}45%{opacity:.15}}
+.lnk{stroke:var(--lime);stroke-width:3;fill:none;stroke-dasharray:8 14;animation:flow 1.1s linear infinite;filter:drop-shadow(0 0 5px var(--lime))}
+@keyframes flow{to{stroke-dashoffset:-44}}
+.nodeg text{font:600 21px Manrope;fill:#e6f2e9;text-anchor:middle}
+.q{font:800 34px Manrope;fill:var(--red);text-anchor:middle;animation:flick 1.6s steps(2) infinite}
+.hubc{animation:breathe 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+/* ---------- S5 pipeline ---------- */
+.pipe{display:flex;align-items:stretch;gap:0;margin-top:40px}
+.step{flex:1;position:relative;padding:28px 26px;background:linear-gradient(145deg,#112219,#0b1712);border:1px solid var(--edge);border-radius:22px;margin-right:38px}
+.step:last-child{margin-right:0}
+.step:not(:last-child):after{content:'➜';position:absolute;right:-36px;top:50%;transform:translateY(-50%);color:var(--lime);font-size:30px;animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{50%{transform:translate(6px,-50%)}}
+.step .n{font:500 22px 'DM Mono',monospace;color:var(--lime)}
+.step h4{font-size:32px;margin:10px 0 8px;font-weight:800}.step p{font-size:23px;line-height:1.45;color:#a8bab0}
+/* ---------- S6 mock ---------- */
+.mock{display:grid;grid-template-columns:1.5fr 1fr;gap:26px;margin-top:8px}
+.map{position:relative;height:560px;border-radius:24px;border:1px solid #2c4a3d;background:radial-gradient(ellipse at 50% 40%,#183024,#08130e);overflow:hidden}
+.map:before{content:'';position:absolute;inset:0;background-image:linear-gradient(#2a463830 1px,transparent 1px),linear-gradient(90deg,#2a463830 1px,transparent 1px);background-size:50px 50px}
+.blk{position:absolute;padding:8px 14px;border:1.5px solid var(--c,#57c9bc);border-radius:10px;background:#0d1d16;font:500 18px 'DM Mono',monospace;color:#e8f3ea}
+.dot{position:absolute;width:9px;height:9px;border-radius:50%;background:var(--lime);opacity:.8;animation:wander var(--t) ease-in-out infinite alternate}
+.dot.hot{background:#ff625b;width:14px;height:14px;box-shadow:0 0 18px #ff625b}
+@keyframes wander{to{transform:translate(var(--dx),var(--dy))}}
+.ripple{position:absolute;left:50%;top:44%;width:30px;height:30px;margin:-15px;border:4px solid var(--red);border-radius:50%;animation:rip 3.2s ease-out infinite}
+@keyframes rip{from{transform:scale(1);opacity:.9}to{transform:scale(28);opacity:0}}
+.verdict{font-size:64px;font-weight:800;color:var(--lime);letter-spacing:-2px}
+.person{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-top:1px solid #1f3529;font-size:24px}
+.person:first-child{border:0}.person span:last-child{font:500 22px 'DM Mono',monospace;color:var(--amber)}
+/* ---------- S7 features ---------- */
+.feat{padding:26px 28px}.feat h3{font-size:31px}.feat p{font-size:23px}
+.feat .ico{font-size:44px}
+/* ---------- S8 demo ---------- */
+.tl{position:relative;display:flex;justify-content:space-between;margin:34px 0 46px}
+.tl:before{content:'';position:absolute;left:40px;right:40px;top:29px;height:4px;background:#22392e;border-radius:4px}
+.tl:after{content:'';position:absolute;left:40px;top:29px;height:4px;width:0;background:linear-gradient(90deg,var(--lime),var(--red));border-radius:4px;box-shadow:0 0 14px var(--lime)}
+.slide.active .tl:after{animation:grow 4s ease-out .6s forwards}
+@keyframes grow{to{width:calc(100% - 80px)}}
+.ev{position:relative;text-align:center;width:300px}
+.ev i{display:grid;place-items:center;width:62px;height:62px;margin:0 auto 14px;border-radius:50%;background:#0c1915;border:3px solid var(--lime);font-style:normal;font-size:28px;position:relative;z-index:2}
+.ev.bad i{border-color:var(--red)}
+.ev b{display:block;font:500 26px 'DM Mono',monospace;color:var(--lime)}.ev.bad b{color:var(--red)}
+.ev span{font-size:23px;color:#b0c2b7;line-height:1.4;display:block;margin-top:4px}
+.metric{text-align:center}
+.compare{border-color:#4d6b34;background:linear-gradient(145deg,#1b2b17cc,#0b1712cc)}
+/* ---------- S9 arch ---------- */
+.arch{display:grid;grid-template-columns:1fr 60px 1.25fr 60px 1fr;align-items:center;margin-top:20px}
+.arrow{font-size:46px;color:var(--lime);text-align:center;animation:nudge2 1.4s ease-in-out infinite}
+@keyframes nudge2{50%{transform:translateX(8px)}}
+.gtag{display:flex;align-items:center;gap:16px;padding:13px 0;border-top:1px solid #1f3529;font-size:25px}.gtag:first-of-type{border:0}
+.gtag b{min-width:210px;color:var(--text)}.gtag span{color:#a8bab0;font-size:22px}
+.ok{color:var(--lime);font:500 17px 'DM Mono';border:1px solid #4d6b34;border-radius:8px;padding:2px 8px;margin-left:auto;white-space:nowrap}
+.plan{color:var(--amber);border-color:#7a5230}
+/* ---------- S10 beyond ---------- */
+.ex{font-size:25px;line-height:1.6;color:#b9cabf}.ex b{color:var(--lime)}
+/* ---------- S12 roadmap ---------- */
+.road3{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.phase .tag{font:500 20px 'DM Mono',monospace;letter-spacing:3px;margin-bottom:12px}
+.phase li{font-size:26px;margin-bottom:8px}
+/* closing */
+.center{align-items:center;text-align:center}
+.pulse-btn{display:inline-block;margin-top:44px;padding:20px 46px;border-radius:999px;background:var(--lime);color:#132016;font-weight:800;font-size:30px;animation:ring 2s infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 #ccfa6988}100%{box-shadow:0 0 0 46px #ccfa6900}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.trow{display:flex;align-items:center;gap:26px;padding:15px 0;border-top:1px solid #1f3529;font-size:29px;color:#dbe8de}.trow span{flex:1}.trow b{color:var(--lime);font-size:34px}
+#chat{background:#0b1712e6;border:1.5px solid var(--lime);border-radius:24px;height:390px;overflow-y:auto;padding:20px;max-width:1500px;box-shadow:0 0 50px #ccfa6922}
+.b{border-radius:20px;padding:14px 22px;margin:10px 0;max-width:82%;font-size:26px;line-height:1.5;border:1px solid var(--edge);color:var(--text);white-space:pre-line}
+.b.ai{border-color:var(--lime);margin-left:auto;background:#ccfa6912}.b.ai:before{content:"✳ CAMPUS EYE · ";color:var(--lime);font:500 17px 'DM Mono'}
+.dts span{display:inline-block;width:11px;height:11px;margin:0 4px;border-radius:50%;background:var(--lime);animation:flick .9s steps(2) infinite}.dts span:nth-child(2){animation-delay:.2s}.dts span:nth-child(3){animation-delay:.4s}
+#sug{margin:16px 0 8px;max-width:1500px}#sug button{cursor:pointer;color:#dbe8de;font-size:22px}#sug button:hover,.go:hover{border-color:var(--lime);color:var(--lime)}
+.inp{display:flex;gap:14px;max-width:1500px;margin-top:8px}.inp input{flex:1;background:#0b1712;border:1.5px solid var(--edge);border-radius:16px;padding:18px 22px;color:var(--text);font:26px Manrope,sans-serif}.inp input:focus{outline:3px solid var(--lime)}
+.go{background:#0b1712;color:var(--text);border:1.5px solid var(--edge);border-radius:16px;padding:0 28px;font:700 24px Manrope,sans-serif;cursor:pointer}.go.p{background:var(--lime);color:#10200f;border-color:var(--lime)}
+.team{text-align:center}.av{width:110px;height:110px;border-radius:50%;margin:0 auto 18px;display:grid;place-items:center;font-size:52px;font-weight:800;color:#10200f;background:linear-gradient(135deg,var(--lime),var(--mint));box-shadow:0 0 40px #ccfa6966}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas><div class="vignette"></div><div id="bar"></div>
+<div id="stage">
+
+<!-- 1 · TITLE -->
+<section class="slide" data-notes="Good morning judges, we are Team Syndicate. Our topic is PS02: when systems do not understand each other. Our project is Campus Eye, a Living Campus AI. Think of God's Eye View, but for one campus. It connects schedules, buses, notices and exams, keeps updating, and answers any campus question. Everything you will see is a simulation, except our timetable and our story.">
+ <div class="orbit a fade" style="--d:.3s"><i></i><i></i><i></i><div class="sun"></div>
+  <div class="spin" style="--t:14s"><b style="--r:150px;--c:#61e2bf">🚌</b></div>
+  <div class="spin" style="--t:22s;animation-direction:reverse"><b style="--r:260px;--c:#ccfa69">📅</b></div>
+  <div class="spin" style="--t:30s"><b style="--r:380px;--c:#ffb375">🏢</b></div>
+  <div class="spin" style="--t:38s;animation-delay:-9s"><b style="--r:380px;--c:#ed76cb">💬</b></div>
+  <div class="spin" style="--t:18s;animation-delay:-5s"><b style="--r:260px;--c:#88b6ff">📊</b></div></div>
+ <div style="position:relative;width:1050px">
+  <div class="kicker a" style="--d:.1s">Team Syndicate · PS02 · SRM University-AP</div>
+  <h1 class="h1 a" style="--d:.3s">When systems<br>don’t <span class="grad">understand</span><br>each other</h1>
+  <p class="lead a" style="--d:.7s;margin-top:34px">Meet <b class="lime">CAMPUS EYE</b> — the Living Campus AI, a campus twin that connects timetables, transport and notices, so people see the ripple <i>before</i> they leave home.</p>
+  <div class="tagline a" style="--d:1.1s;margin-top:44px">TEAM SYNDICATE ✳ A CAMPUS THAT CAN SEE AROUND CORNERS</div>
+ </div>
+</section>
+
+<!-- 2 · PROBLEM STATEMENT -->
+<section class="slide" data-notes="This is the PS02 statement in simple words. A university, a city and a business all run many systems: records, attendance, transport, finance and more. Each works fine alone, but they do not talk to each other. So the information exists, but the connections are missing, and people decide without the full picture. We focus on the university because we live it every day.">
+ <div class="kicker a">The problem · PS02</div>
+ <h2 class="h2 a" style="--d:.15s">Modern systems run on <span class="lime">islands of information.</span></h2>
+ <div class="grid3" style="margin-top:14px">
+  <div class="card world a" style="--d:.4s"><div class="head"><span>🎓</span><h3>University</h3></div>
+   <span class="chip float">records</span><span class="chip float">attendance</span><span class="chip float">schedules</span><span class="chip float">events</span><span class="chip float">transport</span><span class="chip float">facilities</span><span class="chip float">communication</span></div>
+  <div class="card world a" style="--d:.6s"><div class="head"><span>🏙️</span><h3>City</h3></div>
+   <span class="chip float">transportation</span><span class="chip float">infrastructure</span><span class="chip float">emergency services</span><span class="chip float">public facilities</span><span class="chip float">environment</span></div>
+  <div class="card world a" style="--d:.8s"><div class="head"><span>💼</span><h3>Business</h3></div>
+   <span class="chip float">employees</span><span class="chip float">customers</span><span class="chip float">operations</span><span class="chip float">finances</span><span class="chip float">communication</span></div>
+ </div>
+ <p class="callout a" style="--d:1.3s">Information exists. <span class="red">The connections between it are missing.</span><br><span class="muted" style="font-size:34px;font-weight:500">So people decide without seeing the complete picture.</span></p>
+</section>
+
+<!-- 3 · REAL STORY -->
+<section class="slide" data-notes="This is a real story. A morning class was cancelled and I only knew because a friend called. I am a hosteller, so I walked back in minutes. But a day scholar living 20 to 30 km away was already on the bus and lost over an hour and money. Same notice, very different cost. Ravi at 28 km is a made-up profile for our simulation.">
+ <div class="kicker a">A real frustration</div>
+ <h2 class="h2 a" style="--d:.15s">“Class is cancelled.” <span class="muted">My friend called.</span></h2>
+ <div class="road a" style="--d:.4s"><div class="stop" style="left:0">🏠<small>HOME · 20–30 km</small></div><div class="stop" style="right:0;border-color:var(--lime)">🏫<small>CAMPUS</small></div><div class="bus">🚌</div><div class="call">📞 “Hey, class is cancelled!”</div></div>
+ <div class="row" style="margin-top:56px">
+  <div class="card col a left" style="--d:.9s"><h3 class="mint">Hosteller · walks back</h3><p>A few hundred metres. Lost: minutes.</p><div class="big" style="margin-top:14px">0.4 km</div></div>
+  <div class="card col a right" style="--d:1.1s"><h3 class="red">Day scholar · already on the bus</h3><p>Same notice, but it arrives after departure. Lost: an hour or more, plus fare.</p><div class="big" style="margin-top:14px;color:var(--red)">20–30 km</div></div>
+ </div>
+</section>
+
+<!-- 4 · SILOS -->
+<section class="slide" style="flex-direction:row;align-items:center;gap:40px" data-notes="Here is the same problem as a picture. In the middle is you, the student. Around you are seven systems: records, attendance, schedules, events, transport, facilities and communication. The red broken lines with question marks mean they are not connected. You must check each one yourself, and by then it can be too late.">
+ <div class="hubtxt">
+  <div class="kicker a">Why it happens</div>
+  <h2 class="h2 a" style="--d:.15s">Each system is right.<br><span class="red">Together, they’re blind.</span></h2>
+  <div class="card a" style="--d:.5s;margin-bottom:20px"><p><b>Faculty</b> cancels a class — and can’t see who is already travelling.</p></div>
+  <div class="card a" style="--d:.7s;margin-bottom:20px"><p><b>Transport</b> runs on schedule — and can’t see the class was cancelled.</p></div>
+  <div class="card a" style="--d:.9s"><p><b>Student</b> decides alone — with half the picture.</p></div>
+ </div>
+ <div class="hubwrap a zoom" style="--d:.4s"><svg id="hubA" viewBox="0 0 820 760"></svg></div>
+</section>
+
+<section class="slide" data-notes="Why does this happen? Not because data is missing, every system already has data. The problem is the design. One, fragmentation: each department has its own database. Two, delay: updates are manual, so the news is old when it reaches students. Three, there is no single place to ask, you must know which system to open. So we need one shared layer on top."><div class="kicker a">Root cause</div><h2 class="h2 a" style="--d:.15s">Data <span class="lime">silos</span>, not data scarcity.</h2>
+<div class="grid3" style="margin-top:20px"><div class="card a" style="--d:.4s"><span class="ico">🧩</span><h3>Fragmentation</h3><p>Every department runs its own database. Nothing cross-checks anything.</p></div>
+<div class="card a" style="--d:.6s"><span class="ico">🕒</span><h3>Delay</h3><p>Updates are manual, so news is old by the time students see it.</p></div>
+<div class="card a" style="--d:.8s"><span class="ico">🔍</span><h3>No single place to ask</h3><p>You must know which system to open. There is no one interface.</p></div></div>
+<p class="callout a" style="--d:1.3s">The failure is <span class="red">architectural</span>: <span class="muted" style="font-size:34px;font-weight:500">no shared schema, no query layer, no real-time sync.</span></p></section>
+
+<section class="slide" data-notes="Our inspiration is an open-source project called God's Eye View by Bilawal Sidhu. It shows the whole world live on a 3D globe, with planes, ships, satellites and earthquakes, and you can talk to it. We took the same idea and shrank it from the planet to the campus. Planes become buses, earthquake alerts become cancellations and facility alerts, cameras become occupancy, and the voice assistant becomes our Campus AI."><div class="kicker a">Our inspiration</div><h2 class="h2 a" style="--d:.15s">God's Eye View: from <span class="lime">planet</span> to <span class="mint">campus</span>.</h2>
+<p class="lead a" style="--d:.4s;font-size:29px">An open-source 3D platform (by Bilawal Sidhu) that fuses live public feeds on one globe, and lets you talk to it. Same idea, new scope:</p><div style="margin-top:22px"><div class="trow a" style="--d:0.70s"><span>✈️ Live aircraft tracking</span><b>➜</b><span class="lime">🚌 Live bus fleet and delays</span></div><div class="trow a" style="--d:0.88s"><span>🌋 Earthquake and fire alerts</span><b>➜</b><span class="lime">🚨 Cancellations, facility and emergency alerts</span></div><div class="trow a" style="--d:1.06s"><span>📹 Public cameras</span><b>➜</b><span class="lime">📶 Occupancy: library, labs, hostels</span></div><div class="trow a" style="--d:1.24s"><span>🎙️ Realtime voice AI</span><b>➜</b><span class="lime">💬 Campus AI you can ask anything</span></div><div class="trow a" style="--d:1.42s"><span>🎛️ Thermal / night / HUD modes</span><b>➜</b><span class="lime">📊 Academic / Transport / Facility views</span></div><div class="trow a" style="--d:1.60s"><span>🔒 Local-first, public data</span><b>➜</b><span class="lime">🔐 Privacy-first campus data</span></div></div></section>
+
+<!-- 5 · IDEA / PIPELINE -->
+<section class="slide" data-notes="This is our idea in five steps. We do not replace the systems, we weave them together. Step one, sense a change, like a class cancelled or a bus late. Step two, Gemini AI understands it from plain words or voice. Step three, we trace the ripple across timetable, routes, attendance and deadlines. Step four, we rank people by pain, so the longest commuters hear first. Step five, we act: a verdict, a notice in English and Telugu, a make-up slot and a calendar link.">
+ <div class="kicker a">The idea</div>
+ <h2 class="h2 a" style="--d:.15s">Don’t replace the systems. <span class="lime">Weave them together.</span></h2>
+ <p class="lead a" style="--d:.35s">One change goes in. The ripple comes out — who is affected, how badly, and what to do.</p>
+ <div class="pipe">
+  <div class="step a" style="--d:.6s"><div class="n">01</div><h4>Sense</h4><p>A change: class cancelled, bus late, room closed.</p></div>
+  <div class="step a" style="--d:.85s"><div class="n">02</div><h4>Understand</h4><p>Gemini turns plain language (or voice) into a structured event.</p></div>
+  <div class="step a" style="--d:1.1s"><div class="n">03</div><h4>Trace the ripple</h4><p>Timetable × routes × attendance × deadlines.</p></div>
+  <div class="step a" style="--d:1.35s"><div class="n">04</div><h4>Rank by pain</h4><p>Distance, already travelling, classes lost, attendance risk.</p></div>
+  <div class="step a" style="--d:1.6s"><div class="n">05</div><h4>Act</h4><p>Verdict, EN + తెలుగు notice, make-up slot, calendar link.</p></div>
+ </div>
+ <div class="row" style="margin-top:36px;justify-content:center"><div class="a fade" style="--d:2.1s"><span class="chip">COME</span><span class="chip">COME LATE</span><span class="chip">STAY HOME</span></div></div>
+</section>
+
+<!-- 6 · PRODUCT -->
+<section class="slide" data-notes="This is our working website. The map is a digital twin of the campus with blocks, hostels and moving dots. The dots are synthetic, made-up people, not real students. When a change happens, a red ripple spreads. On the right is the verdict for one student, STAY HOME, and a ranked list of who is affected most. The longest commute is number one.">
+ <div class="kicker a">The prototype</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:8px">Campus twin: <span class="lime">watch the ripple spread.</span></h2>
+ <div class="mock">
+  <div class="map a zoom" style="--d:.4s" id="mockmap"><div class="ripple"></div><div class="ripple" style="animation-delay:1.6s"></div>
+   <div class="blk" style="left:40%;top:36%;--c:#57c9bc">V Block</div><div class="blk" style="left:19%;top:60%;--c:#4ea8de">Ganga A</div><div class="blk" style="left:70%;top:66%;--c:#ed76cb">Krishna</div><div class="blk" style="left:3%;top:40%;--c:#ffb375">Main Gate</div>
+   <div style="position:absolute;left:18px;bottom:14px;font:500 17px 'DM Mono';color:#7d9488">SCHEMATIC · 300 SYNTHETIC AGENTS · FICTIONAL BUSES</div></div>
+  <div>
+   <div class="card a right" style="--d:.7s;margin-bottom:20px"><div class="unit" style="margin:0 0 8px">TRAVEL VERDICT · RAVI (SIM)</div><div class="verdict">STAY HOME</div><p style="font-size:22px;margin-top:6px">All listed classes cancelled in this simulated scenario.</p></div>
+   <div class="card a right" style="--d:.95s"><div class="unit" style="margin:0 0 6px">PAIN-RANKED ALERTS</div>
+    <div class="person"><span>Ravi · 28 km · R3</span><span>#1 · 62</span></div><div class="person"><span>Sneha · 24 km · R1</span><span>#2 · 48</span></div><div class="person"><span>Anitha · 18 km · R4</span><span>#3 · 36</span></div><div class="person"><span>Kiran · 10 km · R2</span><span>#4 · 25</span></div></div>
+  </div>
+ </div>
+ <div class="note-tag">SIMULATED PROFILES · NOT REAL STUDENTS</div>
+</section>
+
+<section class="slide" data-notes="Now the live demo. This is the Campus AI. Tap a question or type your own. Ask: when is my next exam, is bus R3 on time, what classes do I have on Monday, am I eligible for exams, or cancel Monday 9 AM class. You can also press Auto Demo. Please note, the answers use sample campus data. In the real version, the same AI reads live campus systems."><div class="kicker a">Live demo · ask anything</div><h2 class="h2 a" style="--d:.15s;margin-bottom:14px">Ask the campus <span class="lime">anything.</span></h2>
+<div id="chat" class="a" style="--d:.4s"><div class="b ai">Hi! I know timetables, exams, buses, attendance, deadlines, faculty, rooms, library and hostels. Tap a question or type your own.</div></div>
+<div id="sug" class="a" style="--d:.6s"></div>
+<div class="inp a" style="--d:.8s"><input id="q" placeholder="Try: When is my next exam?" aria-label="Ask Campus Eye"><button class="go p" onclick="askBox()">ASK ↗</button><button class="go" onclick="autoDemo()">▶ AUTO DEMO</button></div>
+<div class="note-tag">DEMO ANSWERS USE SAMPLE CAMPUS DATA · THE REAL VERSION READS LIVE SOURCES</div></section>
+
+<!-- 7 · FEATURES -->
+<section class="slide" data-notes="Here are the nine things already built. Butterfly Effect traces a change. Come, Late or Stay Home gives a verdict. Pain-ranked alerts tell the longest commutes first. The wasted-journey score shows kilometres, hours and rupees lost. Rewind shows what if they had known at 6 AM. The make-up slot finder suggests free periods with Calendar links. Voice and Telugu let you speak a change. Bus route cards open Google Maps. And there are Student, Faculty and Admin views.">
+ <div class="kicker a">What’s built today</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:34px">Nine things, <span class="lime">one connected view.</span></h2>
+ <div class="grid3" style="gap:22px">
+  <div class="card feat a" style="--d:.3s"><span class="ico">🦋</span><h3>Butterfly Effect</h3><p>Type a change; trace its ripple.</p></div>
+  <div class="card feat a" style="--d:.4s"><span class="ico">🚦</span><h3>Come / Late / Stay</h3><p>A verdict per person, per day.</p></div>
+  <div class="card feat a" style="--d:.5s"><span class="ico">🔥</span><h3>Pain-ranked alerts</h3><p>Longest commutes hear first.</p></div>
+  <div class="card feat a" style="--d:.6s"><span class="ico">📏</span><h3>Wasted-journey score</h3><p>Kilometres, hours and ₹ lost.</p></div>
+  <div class="card feat a" style="--d:.7s"><span class="ico">⏪</span><h3>Rewind</h3><p>What if they’d known at 06:00?</p></div>
+  <div class="card feat a" style="--d:.8s"><span class="ico">🗓️</span><h3>Make-up slot finder</h3><p>Free periods + Calendar / .ics.</p></div>
+  <div class="card feat a" style="--d:.9s"><span class="ico">🗣️</span><h3>Voice + Telugu</h3><p>Speak a change; get EN + తెలుగు notice.</p></div>
+  <div class="card feat a" style="--d:1s"><span class="ico">🚌</span><h3>Bus route cards</h3><p>Stops, timings, Google Maps links.</p></div>
+  <div class="card feat a" style="--d:1.1s"><span class="ico">👥</span><h3>Student · Faculty · Admin</h3><p>Each role sees what matters to it.</p></div>
+ </div>
+</section>
+
+<!-- 8 · DEMO NUMBERS -->
+<section class="slide" data-notes="Let us follow Ravi through one day. At 6 AM the notice could reach him. At 7:10 his bus leaves Guntur. At 9 the class is cancelled. At about 10:30 he is back home with nothing gained. That is a wasted round trip in kilometres, hours and rupees. With Rewind, if he knew at 6 AM, all of it is saved. These numbers are simulated and the assumptions are editable.">
+ <div class="kicker a">Demo scenario · Ravi (simulated)</div>
+ <h2 class="h2 a" style="--d:.15s">The same notice, <span class="lime">three hours earlier.</span></h2>
+ <div class="tl a" style="--d:.3s">
+  <div class="ev"><i>⏰</i><b>06:00</b><span>Notice could reach him<br>(Rewind case)</span></div>
+  <div class="ev"><i>🚌</i><b>07:10</b><span>R3 leaves Guntur<br>(fictional timing)</span></div>
+  <div class="ev bad"><i>❌</i><b>09:00</b><span>Monday class<br>cancelled</span></div>
+  <div class="ev bad"><i>↩️</i><b>≈10:30</b><span>Back home,<br>nothing gained</span></div>
+ </div>
+ <div class="grid4">
+  <div class="card metric a zoom" style="--d:1.2s"><div class="big red"><span data-count="56">0</span></div><div class="unit">KM WASTED (ROUND TRIP)</div></div>
+  <div class="card metric a zoom" style="--d:1.35s"><div class="big red"><span data-count="2.5" data-dec="1">0</span></div><div class="unit">HOURS ON THE ROAD</div></div>
+  <div class="card metric a zoom" style="--d:1.5s"><div class="big red">₹<span data-count="140">0</span></div><div class="unit">ESTIMATED FARE @ ₹2.5/KM</div></div>
+  <div class="card metric compare a zoom" style="--d:1.65s"><div class="big">0</div><div class="unit">IF KNOWN AT 06:00 · REWIND</div></div>
+ </div>
+ <div class="note-tag">ALL FIGURES SIMULATED · ASSUMPTIONS EDITABLE IN CONFIG</div>
+</section>
+
+<!-- 9 · ARCHITECTURE + GOOGLE -->
+<section class="slide" data-notes="On the left are the signals: timetable, buses, attendance, deadlines, and what people type or speak. In the middle is our engine: Google Gemini understands changes, a weighted pain model ranks people, and Web Speech handles voice. On the right are the actions: verdict, ranked alerts, make-up slots, Calendar and Maps. The ticks show what is built today. Firebase, Cloud Run and Classroom or Sheets are planned.">
+ <div class="kicker a">How it works · Google technology</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:10px">Connected signals in, <span class="lime">clear actions out.</span></h2>
+ <div class="arch">
+  <div class="card a left" style="--d:.4s"><h3>Signals</h3><p>Timetable<br>Bus routes<br>Attendance<br>Deadlines<br>Typed / spoken change</p></div>
+  <div class="arrow">➜</div>
+  <div class="card a zoom" style="--d:.7s;border-color:#617b42"><h3 class="lime">✳ Weave engine</h3>
+   <div class="gtag"><b>Gemini API</b><span>Parse change · explain · EN/తెలుగు notice</span><em class="ok">LIVE</em></div>
+   <div class="gtag"><b>Ripple + pain</b><span>Weighted, editable model</span><em class="ok">LIVE</em></div>
+   <div class="gtag"><b>Web Speech</b><span>Voice in / narration</span><em class="ok">LIVE</em></div></div>
+  <div class="arrow">➜</div>
+  <div class="card a right" style="--d:.9s"><h3>Actions</h3><p>Verdict<br>Ranked alerts<br>Make-up slots<br>Calendar / .ics<br>Maps directions</p></div>
+ </div>
+ <div class="card a" style="--d:1.3s;margin-top:26px;padding:20px 30px">
+  <span class="chip" style="border-color:#4d6b34;color:var(--lime)">✔ Gemini</span><span class="chip" style="border-color:#4d6b34;color:var(--lime)">✔ Google Calendar</span><span class="chip" style="border-color:#4d6b34;color:var(--lime)">✔ Google Maps links</span><span class="chip" style="border-color:#4d6b34;color:var(--lime)">✔ Web Speech</span><span class="chip" style="border-color:#4d6b34;color:var(--lime)">✔ Fonts</span>
+  <span class="chip" style="border-color:#7a5230;color:var(--amber)">◔ Firebase</span><span class="chip" style="border-color:#7a5230;color:var(--amber)">◔ Cloud Run</span><span class="chip" style="border-color:#7a5230;color:var(--amber)">◔ Classroom / Sheets</span>
+  <span class="tagline" style="margin-left:14px">✔ built · ◔ planned</span></div>
+</section>
+
+<!-- 10 · BEYOND CAMPUS -->
+<section class="slide" data-notes="The same engine works in any world of systems. In the university we built it. In a city, if a flyover closes, it can trace bus routes, ambulances and school runs, and suggest reroutes. In a business, if a supplier is late, it can trace orders, shifts and cash flow. Same pattern every time: a change, a ripple, and the complete picture. City and business are concepts, not built yet.">
+ <div class="kicker a">PS02 goes further</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:34px">Same engine. <span class="lime">Any world of systems.</span></h2>
+ <div class="grid3">
+  <div class="card a" style="--d:.4s;border-color:#617b42"><span class="ico">🎓</span><h3>University <span class="ok" style="float:right">BUILT</span></h3><p class="ex"><b>Change:</b> class cancelled<br><b>Ripple:</b> buses, commuters, attendance, labs<br><b>Action:</b> notice + make-up slot</p></div>
+  <div class="card a" style="--d:.65s;border-color:#7a5230"><span class="ico">🏙️</span><h3>City <span class="ok plan" style="float:right">CONCEPT</span></h3><p class="ex"><b>Change:</b> flyover closed for repair<br><b>Ripple:</b> bus routes, ambulances, school runs<br><b>Action:</b> reroute + alert affected areas</p></div>
+  <div class="card a" style="--d:.9s;border-color:#7a5230"><span class="ico">💼</span><h3>Business <span class="ok plan" style="float:right">CONCEPT</span></h3><p class="ex"><b>Change:</b> supplier delayed<br><b>Ripple:</b> orders, shifts, cash flow, customers<br><b>Action:</b> re-plan + notify early</p></div>
+ </div>
+ <p class="callout a" style="--d:1.4s;font-size:38px">Entities → a change event → a ripple → <span class="lime">the complete picture.</span></p>
+</section>
+
+<!-- 11 · TRUST -->
+<section class="slide" data-notes="We care about trust. We do not track anyone, the agents are synthetic. Everything simulated is clearly labelled. A human stays in the loop: notices are drafts and nothing is sent automatically. And the Gemini key stays in the browser for now, with a Cloud Run proxy planned for real deployment.">
+ <div class="kicker a">Privacy &amp; honesty</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:34px">Useful, <span class="lime">and clearly a simulation.</span></h2>
+ <div class="grid4" style="grid-template-columns:repeat(2,1fr);gap:26px">
+  <div class="card a left" style="--d:.4s"><span class="ico">🚫</span><h3>No tracking</h3><p>Synthetic agents only. No real student location, ever.</p></div>
+  <div class="card a right" style="--d:.55s"><span class="ico">🏷️</span><h3>Everything labelled</h3><p>Only the timetable and the story are real. Routes, people and metrics are marked simulated.</p></div>
+  <div class="card a left" style="--d:.7s"><span class="ico">✋</span><h3>Human in the loop</h3><p>Notices are drafts. Faculty reviews before anything is sent. Nothing is auto-sent.</p></div>
+  <div class="card a right" style="--d:.85s"><span class="ico">🔑</span><h3>Key stays local</h3><p>Gemini key lives in your browser tab; Cloud Run proxy planned for deployment.</p></div>
+ </div>
+</section>
+
+<!-- 12 · ROADMAP -->
+<section class="slide" data-notes="Our roadmap has three phases. Now is the prototype: the living twin, Gemini, slot finder and voice. Next is connecting real data: Firebase sync, Cloud Run, Sheets or Classroom feeds and real bus timings. Later is scale: a one-department pilot, a live Maps view, opt-in push alerts and city and business modules.">
+ <div class="kicker a">Roadmap</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:34px">From prototype <span class="lime">to pilot.</span></h2>
+ <div class="road3">
+  <div class="card phase a" style="--d:.4s;border-color:#617b42"><div class="tag lime">NOW · PROTOTYPE</div><ul><li>Living campus twin</li><li>Gemini parsing + EN/తెలుగు</li><li>Slot finder, Calendar, Maps</li><li>Voice input</li></ul></div>
+  <div class="card phase a" style="--d:.65s"><div class="tag amber">NEXT · CONNECT</div><ul><li>Firebase live sync across phones</li><li>Cloud Run hides the API key</li><li>Sheets / Classroom real data</li><li>Real bus timings from transport</li></ul></div>
+  <div class="card phase a" style="--d:.9s"><div class="tag mint">LATER · SCALE</div><ul><li>One-department pilot</li><li>Maps JS live route view</li><li>Push alerts, opt-in only</li><li>City &amp; business modules</li></ul></div>
+ </div>
+</section>
+
+<!-- 13 · IMPACT + ASK -->
+<section class="slide" data-notes="How do we measure success? By preventable journeys: kilometres, student hours and rupees saved, and how early the notice reaches people. Before we claim anything, we will validate by surveying five to ten day scholars. Our ask is a one-department pilot with real timetable and notice feeds, opt-in and privacy-first.">
+ <div class="kicker a">Impact &amp; the ask</div>
+ <h2 class="h2 a" style="--d:.15s;margin-bottom:30px">Measure what was <span class="lime">preventable.</span></h2>
+ <div class="grid4">
+  <div class="card metric a zoom" style="--d:.4s"><div class="big">km</div><div class="unit">PREVENTABLE JOURNEY KM</div></div>
+  <div class="card metric a zoom" style="--d:.55s"><div class="big">hrs</div><div class="unit">STUDENT HOURS SAVED</div></div>
+  <div class="card metric a zoom" style="--d:.7s"><div class="big">₹</div><div class="unit">TRAVEL COST AVOIDED</div></div>
+  <div class="card metric a zoom" style="--d:.85s"><div class="big">min</div><div class="unit">NOTICE LEAD TIME</div></div>
+ </div>
+ <div class="row" style="margin-top:34px">
+  <div class="card col a left" style="--d:1.2s"><h3 class="mint">Validate first</h3><p>Survey 5–10 day scholars: how far, how often, how many wasted trips. One real number beats every simulated one.</p></div>
+  <div class="card col a right" style="--d:1.4s;border-color:#617b42"><h3 class="lime">The ask</h3><p>A one-department pilot with real timetable and notice feeds — opt-in, privacy-first.</p></div>
+ </div>
+</section>
+
+<section class="slide" data-notes="We are Team Syndicate. Jai Vardhan is our team leader. Shorya Pratap Singh Chandrawat and Abhinav are our team members. Together we built the website, the AI demo and this presentation."><div class="kicker a">The team</div><h2 class="h2 a" style="--d:.15s">Built by <span class="grad">Syndicate.</span></h2>
+<div class="grid3" style="margin-top:24px"><div class="card team a" style="--d:.4s"><div class="av">J</div><h3>Jai Vardhan</h3><p class="lime">Team Leader</p></div>
+<div class="card team a" style="--d:.6s"><div class="av">S</div><h3>Shorya Pratap Singh Chandrawat</h3><p class="lime">Team Member</p></div>
+<div class="card team a" style="--d:.8s"><div class="av">A</div><h3>Abhinav</h3><p class="lime">Team Member</p></div></div>
+<p class="callout a" style="--d:1.3s;font-size:38px">Website · AI demo · this presentation. <span class="lime">One team, one connected campus.</span></p></section>
+
+<!-- 14 · CLOSE -->
+<section class="slide center" data-notes="To close: the best notification is the one that arrives before the bus leaves. Campus Eye connects the systems so nobody wastes a journey. Thank you. We are happy to take questions, and we can run the live demo again.">
+ <div class="kicker a">PS02 · Campus Weave · SRM University-AP</div>
+ <h1 class="h1 a" style="--d:.2s;font-size:120px">A campus that can<br><span class="grad">see around corners.</span></h1>
+ <p class="lead a" style="--d:.6s;margin-top:36px;text-align:center">Because the best notification is the one that arrives <b class="lime">before the bus leaves.</b></p>
+ <div class="pulse-btn a zoom" style="--d:1s">Thank you · Live demo ▶</div>
+</section>
+</div>
+
+<button class="nav" id="prev" aria-label="Previous slide">‹</button><button class="nav" id="next" aria-label="Next slide">›</button>
+<div id="dots"></div><div id="count"></div>
+<div id="help">← → / SPACE navigate · F fullscreen · N notes · A autoplay</div>
+<div id="notes"></div>
+
+<script>
+const slides=[...document.querySelectorAll('.slide')],$=id=>document.getElementById(id);let cur=0,auto=null,NS='http://www.w3.org/2000/svg';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* ---------- scale stage ---------- */
+function fit(){const s=Math.min(innerWidth/1920,innerHeight/1080);$('stage').style.transform=`translate(-50%,-50%) scale(${s})`}
+addEventListener('resize',fit);fit();
+/* ---------- particles ---------- */
+const cv=$('fx'),cx=cv.getContext('2d');let W,H,P=[],mouse={x:-999,y:-999};
+function size(){W=cv.width=innerWidth*devicePixelRatio;H=cv.height=innerHeight*devicePixelRatio;const n=reduce?30:Math.min(130,Math.floor(innerWidth*innerHeight/14000));P=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35*devicePixelRatio,vy:(Math.random()-.5)*.35*devicePixelRatio,r:(Math.random()*1.8+.8)*devicePixelRatio,c:Math.random()<.2?'97,226,191':'204,250,105'}))}
+addEventListener('resize',size);size();
+addEventListener('pointermove',e=>{mouse.x=e.clientX*devicePixelRatio;mouse.y=e.clientY*devicePixelRatio});
+function burst(){P.forEach(p=>{p.vx+=(Math.random()-.5)*5*devicePixelRatio;p.vy+=(Math.random()-.5)*5*devicePixelRatio})}
+let pulse=null;
+function loop(){cx.clearRect(0,0,W,H);const link=150*devicePixelRatio;
+ for(let i=0;i<P.length;i++){const p=P[i];p.x+=p.vx;p.y+=p.vy;p.vx*=.995;p.vy*=.995;
+  const dx=p.x-mouse.x,dy=p.y-mouse.y,d=Math.hypot(dx,dy);if(d<180*devicePixelRatio&&d>0){p.vx+=dx/d*.06;p.vy+=dy/d*.06}
+  if(Math.abs(p.vx)<.08)p.vx+=(Math.random()-.5)*.02;if(Math.abs(p.vy)<.08)p.vy+=(Math.random()-.5)*.02;
+  if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+  for(let j=i+1;j<P.length;j++){const q=P[j],dd=Math.hypot(p.x-q.x,p.y-q.y);if(dd<link){cx.strokeStyle=`rgba(${p.c},${(1-dd/link)*.28})`;cx.lineWidth=devicePixelRatio;cx.beginPath();cx.moveTo(p.x,p.y);cx.lineTo(q.x,q.y);cx.stroke()}}
+  cx.fillStyle=`rgba(${p.c},.75)`;cx.shadowColor=`rgb(${p.c})`;cx.shadowBlur=8*devicePixelRatio;cx.beginPath();cx.arc(p.x,p.y,p.r,0,7);cx.fill();cx.shadowBlur=0}
+ requestAnimationFrame(loop)}
+loop();
+/* ---------- hub diagrams (slides 4 & 5) ---------- */
+const NODES=[['Records','🎓'],['Attendance','✅'],['Schedules','📅'],['Events','🎉'],['Transport','🚌'],['Facilities','🏢'],['Comms','💬']];
+function hub(id,connected){const s=$(id),cxp=410,cyp=380,R=290;const g=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);s.append(e);return e};
+ g('circle',{cx:cxp,cy:cyp,r:R+40,fill:'none',stroke:'#1f3a2d','stroke-dasharray':'4 10'});
+ NODES.forEach((n,i)=>{const a=-Math.PI/2+i*2*Math.PI/NODES.length,x=cxp+Math.cos(a)*R,y=cyp+Math.sin(a)*R;
+  if(connected){g('line',{x1:x,y1:y,x2:cxp,y2:cyp,class:'lnk',style:`animation-delay:${-i*.15}s`})}
+  else{const t1=.16,t2=.38,t3=.62,t4=.78;g('line',{x1:x+(cxp-x)*t1,y1:y+(cyp-y)*t1,x2:x+(cxp-x)*t2,y2:y+(cyp-y)*t2,class:'brk',style:`animation-delay:${i*.31}s`});g('line',{x1:x+(cxp-x)*t3,y1:y+(cyp-y)*t3,x2:x+(cxp-x)*t4,y2:y+(cyp-y)*t4,class:'brk',style:`animation-delay:${i*.31+.7}s`});
+   const q=g('text',{x:x+(cxp-x)*.5,y:y+(cyp-y)*.5+10,class:'q',style:`animation-delay:${i*.2}s`});q.textContent='?'}
+  const c=g('circle',{cx:x,cy:y,r:46,fill:'#0d1a14',stroke:connected?'#ccfa69':'#4a6a5a','stroke-width':2.5});
+  const em=g('text',{x,y:y+11,'font-size':32,'text-anchor':'middle'});em.textContent=n[1];
+  const t=g('text',{x,y:y+72,class:'nodeg'});t.style.cssText='font:600 21px Manrope;fill:#e6f2e9;text-anchor:middle';t.textContent=n[0]});
+ const h=g('circle',{cx:cxp,cy:cyp,r:64,fill:connected?'url(#gr)':'#131f19',stroke:connected?'#ccfa69':'#6b3a35','stroke-width':3,class:'hubc'});
+ const l=g('text',{x:cxp,y:cyp+9,'font-size':28,'text-anchor':'middle','font-weight':800});l.style.fill=connected?'#10200f':'#ff9c93';l.textContent=connected?'WEAVE':'YOU';
+ const d=document.createElementNS(NS,'defs');d.innerHTML='<radialGradient id="gr"><stop offset="0" stop-color="#f5ffd6"/><stop offset=".6" stop-color="#ccfa69"/><stop offset="1" stop-color="#3f9a6b"/></radialGradient>';s.prepend(d)}
+hub('hubA',false);
+/* ---------- mock map dots ---------- */
+(function(){const m=$('mockmap');for(let i=0;i<70;i++){const d=document.createElement('i');d.className='dot'+(i%9===0?' hot':'');d.style.left=(5+Math.random()*88)+'%';d.style.top=(12+Math.random()*72)+'%';d.style.setProperty('--dx',(Math.random()*120-60)+'px');d.style.setProperty('--dy',(Math.random()*90-45)+'px');d.style.setProperty('--t',(3+Math.random()*5)+'s');m.append(d)}})();
+/* ---------- counters ---------- */
+function counters(sl){sl.querySelectorAll('[data-count]').forEach(el=>{const t=+el.dataset.count,dec=+(el.dataset.dec||0);const delay=1400;if(reduce){el.textContent=t.toFixed(dec);return}el.textContent=(0).toFixed(dec);setTimeout(()=>{const t0=performance.now();(function f(n){const p=Math.min(1,(n-t0)/1400);el.textContent=(t*(1-Math.pow(1-p,3))).toFixed(dec);if(p<1&&slides[cur]===sl)requestAnimationFrame(f)})(t0)},delay)})}
+/* ---------- navigation ---------- */
+
+/* ---------- Campus AI demo (sample data) ---------- */
+const TT={Monday:['09:00–10:50 SEC101 · V 406','11:00–12:50 CSE101 · V 601'],Tuesday:['11:00 FIC102 Physics · V 406','12:00 CSE101 · V 406','15:00 FIC103 Calculus · V 406','16:00 SEC101 · V 406'],Wednesday:['09:00–10:50 AEC101 · V 406','13:00–14:50 VAC101 · V 406'],Thursday:['10:00 FIC102 · V 406','11:00–12:50 CSE101 · V 406'],Friday:['09:00–10:50 CSE101 · V 601','13:00–14:50 FIC103 · V 406','15:00–17:30 FIC102 · V 305'],Saturday:[]};
+const RT={R1:'Vijayawada · 24 km · departs 07:15, arrives 08:20',R2:'Mangalagiri · 10 km · departs 08:00, arrives 08:30',R3:'Guntur · 29 km · departs 07:10, arrives 08:25',R4:'Kanuru–Tadepalli · 20 km · departs 07:30, arrives 08:25'};
+const DY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+function dayOf(l){for(const d of DY)if(l.includes(d.toLowerCase()))return d;if(/tomorrow/.test(l))return DY[(new Date().getDay()+1)%7];return DY[new Date().getDay()]}
+function answer(q){const l=q.toLowerCase();
+if(/exam|test|hall/.test(l)&&!/eligib/.test(l))return'📚 Next exam: Engineering Physics (FIC102), Tue 10:00 AM, Room V 406. Synced from Exam Cell 2 min ago.\n✅ Your attendance there is 76%, above the 75% limit, but the margin is thin.';
+if(/eligib|attendance|75/.test(l))return'✅ Attendance: VAC101 95% · FIC103 91% · AEC101 88% · SEC101 84% · CSE101 79% · FIC102 76%.\n⚠ FIC102 is closest to the 75% cut-off. Attend the next classes.';
+if(/cancel|delay/.test(l)&&!/bus/.test(l)||/butterfly|ripple/.test(l))return'🦋 Ripple traced: cancelled Monday P1 affects 4 day scholars.\n#1 Ravi (28 km, R3) is already travelling → alerted first.\nVerdict: STAY HOME. Make-up slot: Wed P3, V 406. Notice ready in English + తెలుగు.';
+if(/bus|shuttle|route|r[1-4]\b/.test(l)){const m=l.match(/r([1-4])/);return m?'🚌 R'+m[1]+' · '+RT['R'+m[1]]+'. Status: on time (simulated live).':'🚌 Routes today, all on time:\n'+Object.entries(RT).map(([k,v])=>k+' · '+v).join('\n')}
+if(/deadline|assignment|submit|record|report/.test(l))return'📝 Upcoming: Physics lab report (Tue) · C-program lab record (Thu) · Calculus assignment (Fri).';
+if(/faculty|professor|teacher|who teaches/.test(l))return'👩‍🏫 CSE101: Dr. Punuri Sudheer Babu & Mr. Piyush Kumar · FIC102: Dr. Kiran · FIC103: Dr. Amit Roy · AEC101: Dr. Kousani Banerjee · VAC101: Dr. Debajyoti Kundu.';
+if(/room|free|empty|v ?406|v ?601/.test(l))return'🏢 V 406 is free 13:00–15:00 today. V 601 is in use until 12:50. Nothing reported broken.';
+if(/library|seat|wifi|lab|gym|mess|hostel|canteen/.test(l))return'🏫 Live occupancy (sample): Library 62% full · Labs 4 of 6 free · Wi-Fi normal · Mess open · Gym 30% full.';
+if(/make.?up|reschedul|slot/.test(l))return'🗓 Best make-up slots: Wed P3 11:00 · Thu P5 13:00 · Fri P2 10:00, all V 406. One click to Google Calendar.';
+if(/telugu|తెలుగు|notice/.test(l))return'📢 EN: Tomorrow 9 AM class is cancelled. Please do not travel.\nTE: రేపు ఉదయం 9 గంటల తరగతి రద్దు చేయబడింది. దయచేసి ప్రయాణించవద్దు.';
+if(/come|go|today|class|timetable|schedule|tomorrow|monday|tuesday|wednesday|thursday|friday|saturday/.test(l)){const d=dayOf(l),c=TT[d]||[];return c.length?'🗓 '+d+' classes:\n'+c.join('\n')+'\nVerdict: COME.':'🗓 '+d+': no classes on your timetable. STAY HOME (check notices).'}
+return'I can answer about: timetable, exams, attendance, buses, deadlines, faculty, rooms, library and hostels, make-up slots and notices. Try “Is the R3 bus on time?”'}
+const chat=$('chat');let busy=false;
+['When is my next exam?','Classes on Monday?','Is bus R3 on time?','Am I eligible for exams?','Cancel Monday 9 AM class','Any deadlines?','Is the library crowded?','Who teaches CSE101?','Notice in Telugu'].forEach(s=>{const b=document.createElement('button');b.className='chip';b.textContent=s;b.onclick=()=>ask(s);$('sug').append(b)});
+function bub(c,s){const d=document.createElement('div');d.className='b '+c;d.textContent=s;chat.append(d);chat.scrollTop=chat.scrollHeight;return d}
+function ask(q){return new Promise(res=>{if(busy||!q)return res();busy=true;bub('u',q);const d=bub('ai','');d.insertAdjacentHTML('beforeend','<span class="dts"><span></span><span></span><span></span></span>');setTimeout(()=>{const a=answer(q);d.textContent='';let k=0;const iv=setInterval(()=>{d.textContent=a.slice(0,k+=3);chat.scrollTop=chat.scrollHeight;if(k>=a.length){clearInterval(iv);busy=false;res()}},18)},700)})}
+function askBox(){const e=$('q'),v=e.value.trim();e.value='';ask(v)}
+$('q').addEventListener('keydown',e=>{if(e.key==='Enter')askBox()});
+async function autoDemo(){for(const q of['When is my next exam?','Is bus R3 on time?','Cancel Monday 9 AM class','Notice in Telugu']){await ask(q);await new Promise(r=>setTimeout(r,900))}}
+const notes=slides.map(s=>s.dataset.notes||'');
+slides.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label','Go to slide '+(i+1));b.onclick=()=>go(i);$('dots').append(b)});
+function go(n,fromHash){n=Math.max(0,Math.min(slides.length-1,n));const first=!slides.some(s=>s.classList.contains('active'));
+ slides.forEach((s,i)=>{if(i!==n){s.classList.remove('active')}});
+ cur=n;const s=slides[n];void s.offsetWidth;s.classList.add('active');
+ $('bar').style.width=((n+1)/slides.length*100)+'%';[...$('dots').children].forEach((d,i)=>d.classList.toggle('on',i===n));$('count').textContent=String(n+1).padStart(2,'0')+' / '+String(slides.length).padStart(2,'0');
+ $('notes').innerHTML='<b>SPEAKER NOTES</b>'+notes[n];if(!first)burst();counters(s);history.replaceState(null,'','#'+(n+1))}
+const next=()=>go(cur+1),prev=()=>go(cur-1);
+$('next').onclick=next;$('prev').onclick=prev;
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT')return;const k=e.key;if(['ArrowRight','PageDown',' ','Enter'].includes(k)){e.preventDefault();next()}else if(['ArrowLeft','PageUp','Backspace'].includes(k)){e.preventDefault();prev()}else if(k==='Home')go(0);else if(k==='End')go(slides.length-1);else if(k==='f'||k==='F'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.()}else if(k==='n'||k==='N')$('notes').classList.toggle('show');else if(k==='a'||k==='A'){if(auto){clearInterval(auto);auto=null;$('help').textContent='AUTOPLAY OFF'}else{auto=setInterval(()=>cur<slides.length-1?next():go(0),9000);$('help').textContent='AUTOPLAY ON · press A to stop'}}});
+let tx=null;addEventListener('touchstart',e=>tx=e.touches[0].clientX,{passive:true});addEventListener('touchend',e=>{if(tx==null)return;const d=e.changedTouches[0].clientX-tx;if(Math.abs(d)>60)d<0?next():prev();tx=null});
+go(Math.max(0,(parseInt(location.hash.slice(1))||1)-1),true);
+</script>
+</body>
+</html>
