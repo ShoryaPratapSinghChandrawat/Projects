@@ -1,0 +1,121 @@
+date,product,category,region,units_sold,unit_price,discount_pct,customer_rating
+2026-01-01,Wireless Mouse,Accessories,South,1,1200,10,3.7
+2026-01-02,Keyboard,Accessories,North,4,2200,10,4.5
+2026-01-03,Notebook,Stationery,South,14,180,0,3.3
+2026-01-04,Headphones,Electronics,South,17,3500,10,3.2
+2026-01-05,Desk Lamp,Furniture,East,14,1800,0,4.0
+2026-01-06,Laptop,Electronics,East,6,65000,10,4.0
+2026-01-07,Keyboard,Accessories,North,7,2200,15,3.8
+2026-01-08,Webcam,Electronics,East,4,4200,5,4.7
+2026-01-09,Laptop,Electronics,West,15,65000,10,3.4
+2026-01-10,Wireless Mouse,Accessories,East,18,1200,5,4.7
+2026-01-11,Notebook,Stationery,South,7,180,10,3.3
+2026-01-12,Monitor,Electronics,North,3,14500,15,3.6
+2026-01-13,Webcam,Electronics,East,9,4200,5,4.3
+2026-01-14,Keyboard,Accessories,East,12,2200,5,3.6
+2026-01-15,Wireless Mouse,Accessories,South,6,1200,10,4.5
+2026-01-16,Office Chair,Furniture,South,13,12500,5,5.0
+2026-01-17,USB-C Hub,Accessories,East,2,2800,0,4.7
+2026-01-18,Webcam,Electronics,East,9,4200,0,3.6
+2026-01-19,Headphones,Electronics,West,16,3500,5,4.8
+2026-01-20,Keyboard,Accessories,East,9,2200,0,3.6
+2026-01-21,Notebook,Stationery,South,14,180,10,3.9
+2026-01-22,Keyboard,Accessories,North,17,2200,5,3.4
+2026-01-23,Wireless Mouse,Accessories,West,5,1200,10,3.5
+2026-01-24,Notebook,Stationery,West,3,180,5,3.9
+2026-01-25,Desk Lamp,Furniture,North,9,1800,10,4.7
+2026-01-26,Wireless Mouse,Accessories,East,18,1200,15,3.7
+2026-01-27,Wireless Mouse,Accessories,North,10,1200,5,3.5
+2026-01-28,Monitor,Electronics,North,17,14500,15,3.5
+2026-01-29,Monitor,Electronics,East,17,14500,10,3.6
+2026-01-30,Keyboard,Accessories,North,18,2200,15,4.9
+2026-01-31,Notebook,Stationery,East,11,180,5,3.2
+2026-02-01,Monitor,Electronics,North,8,14500,0,3.6
+2026-02-02,Wireless Mouse,Accessories,South,16,1200,15,3.3
+2026-02-03,Keyboard,Accessories,West,16,2200,10,3.5
+2026-02-04,Headphones,Electronics,South,18,3500,15,4.5
+2026-02-05,Monitor,Electronics,West,13,14500,10,4.4
+2026-02-06,Desk Lamp,Furniture,North,15,1800,0,3.6
+2026-02-07,USB-C Hub,Accessories,South,1,2800,10,4.2
+2026-02-08,Laptop,Electronics,South,3,65000,10,4.3
+2026-02-09,Wireless Mouse,Accessories,South,2,1200,15,3.8
+2026-02-10,Monitor,Electronics,West,16,14500,0,4.2
+2026-02-11,Headphones,Electronics,North,16,3500,15,3.9
+2026-02-12,Wireless Mouse,Accessories,West,14,1200,5,4.0
+2026-02-13,Laptop,Electronics,East,4,65000,0,3.9
+2026-02-14,Wireless Mouse,Accessories,West,8,1200,0,3.5
+2026-02-15,Keyboard,Accessories,South,14,2200,0,3.7
+2026-02-16,Wireless Mouse,Accessories,North,15,1200,15,4.8
+2026-02-17,Laptop,Electronics,North,18,65000,15,3.2
+2026-02-18,Headphones,Electronics,South,6,3500,5,4.1
+2026-02-19,Webcam,Electronics,West,2,4200,0,3.9
+2026-02-20,Monitor,Electronics,West,15,14500,5,4.0
+2026-02-21,Keyboard,Accessories,North,7,2200,5,3.6
+2026-02-22,Notebook,Stationery,North,18,180,0,4.5
+2026-02-23,Laptop,Electronics,South,16,65000,10,4.9
+2026-02-24,Laptop,Electronics,North,17,65000,0,4.7
+2026-02-25,Notebook,Stationery,West,3,180,10,4.8
+2026-02-26,Wireless Mouse,Accessories,North,8,1200,10,4.3
+2026-02-27,Webcam,Electronics,South,17,4200,5,4.9
+2026-02-28,USB-C Hub,Accessories,East,8,2800,5,3.9
+2026-03-01,Office Chair,Furniture,North,11,12500,15,4.9
+2026-01-01,Office Chair,Furniture,East,4,12500,0,4.2
+2026-01-02,Keyboard,Accessories,East,12,2200,0,4.8
+2026-01-03,Monitor,Electronics,East,6,14500,5,4.7
+2026-01-04,Notebook,Stationery,East,17,180,0,4.4
+2026-01-05,Wireless Mouse,Accessories,North,5,1200,5,3.4
+2026-01-06,Desk Lamp,Furniture,South,5,1800,5,3.7
+2026-01-07,USB-C Hub,Accessories,East,7,2800,10,4.3
+2026-01-08,Desk Lamp,Furniture,North,16,1800,5,4.8
+2026-01-09,Wireless Mouse,Accessories,North,14,1200,15,3.7
+2026-01-10,USB-C Hub,Accessories,South,5,2800,10,5.0
+2026-01-11,Office Chair,Furniture,North,18,12500,10,4.0
+2026-01-12,Wireless Mouse,Accessories,North,3,1200,10,4.8
+2026-01-13,USB-C Hub,Accessories,North,18,2800,0,4.0
+2026-01-14,Monitor,Electronics,North,12,14500,15,4.9
+2026-01-15,USB-C Hub,Accessories,North,7,2800,10,3.6
+2026-01-16,USB-C Hub,Accessories,South,18,2800,15,3.9
+2026-01-17,Headphones,Electronics,West,6,3500,15,4.7
+2026-01-18,Laptop,Electronics,West,6,65000,10,4.9
+2026-01-19,Headphones,Electronics,North,9,3500,0,4.6
+2026-01-20,Webcam,Electronics,South,2,4200,15,4.0
+2026-01-21,Office Chair,Furniture,South,12,12500,5,4.7
+2026-01-22,Headphones,Electronics,East,1,3500,10,3.5
+2026-01-23,Monitor,Electronics,West,3,14500,15,3.7
+2026-01-24,Desk Lamp,Furniture,East,11,1800,0,3.4
+2026-01-25,Keyboard,Accessories,West,9,2200,0,3.4
+2026-01-26,USB-C Hub,Accessories,North,11,2800,5,4.3
+2026-01-27,Webcam,Electronics,West,7,4200,5,3.3
+2026-01-28,Laptop,Electronics,South,17,65000,15,4.2
+2026-01-29,USB-C Hub,Accessories,East,14,2800,0,4.9
+2026-01-30,Notebook,Stationery,East,11,180,10,4.7
+2026-01-31,Desk Lamp,Furniture,West,10,1800,10,3.9
+2026-02-01,Monitor,Electronics,West,18,14500,0,3.5
+2026-02-02,Keyboard,Accessories,North,10,2200,5,4.2
+2026-02-03,Monitor,Electronics,East,10,14500,0,4.0
+2026-02-04,Office Chair,Furniture,West,15,12500,5,4.4
+2026-02-05,Keyboard,Accessories,East,3,2200,5,4.1
+2026-02-06,Wireless Mouse,Accessories,South,8,1200,10,3.8
+2026-02-07,Keyboard,Accessories,West,1,2200,0,3.6
+2026-02-08,Notebook,Stationery,South,3,180,5,3.9
+2026-02-09,Webcam,Electronics,North,16,4200,5,3.6
+2026-02-10,Wireless Mouse,Accessories,West,14,1200,0,3.5
+2026-02-11,Laptop,Electronics,North,18,65000,0,4.9
+2026-02-12,Office Chair,Furniture,East,5,12500,15,4.0
+2026-02-13,Office Chair,Furniture,West,17,12500,5,4.7
+2026-02-14,Keyboard,Accessories,South,16,2200,5,3.7
+2026-02-15,Monitor,Electronics,East,17,14500,5,4.3
+2026-02-16,Office Chair,Furniture,East,3,12500,10,3.7
+2026-02-17,USB-C Hub,Accessories,South,11,2800,10,3.3
+2026-02-18,Headphones,Electronics,South,13,3500,10,3.5
+2026-02-19,Wireless Mouse,Accessories,West,14,1200,5,3.8
+2026-02-20,Webcam,Electronics,West,2,4200,0,4.7
+2026-02-21,Notebook,Stationery,West,1,180,15,4.8
+2026-02-22,Office Chair,Furniture,West,1,12500,5,3.7
+2026-02-23,Webcam,Electronics,South,18,4200,10,4.5
+2026-02-24,Office Chair,Furniture,North,8,12500,5,4.0
+2026-02-25,Webcam,Electronics,West,11,4200,10,4.4
+2026-02-26,Keyboard,Accessories,North,15,2200,0,5.0
+2026-02-27,Webcam,Electronics,South,1,4200,0,4.4
+2026-02-28,Office Chair,Furniture,East,6,12500,0,3.7
+2026-03-01,Headphones,Electronics,West,15,3500,5,3.8
