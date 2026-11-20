@@ -1,0 +1,56 @@
+============================================================
+CSV INSIGHT ANALYZER - SALES REPORT
+============================================================
+
+1. DATASET OVERVIEW
+Rows analyzed: 120
+Total units sold: 1236
+
+2. KEY STATISTICS
+Total revenue: Rs. 12,306,140.00
+Average units per sale: 10.30
+Median unit price: Rs. 2,800.00
+Average customer rating: 4.07/5
+Highest single-sale revenue: Rs. 1,170,000.00
+Lowest single-sale revenue: Rs. 153.00
+Revenue standard deviation: Rs. 220,790.79
+
+3. TOP PRODUCT
+Laptop generated Rs. 7,159,750.00 in revenue.
+
+4. BEST RATED PRODUCT
+Office Chair has the highest average rating: 4.25/5.
+
+5. REVENUE BY REGION
+- North: Rs. 4,723,985.00
+- West: Rs. 2,868,612.00
+- South: Rs. 2,862,300.00
+- East: Rs. 1,851,243.00
+
+6. REVENUE BY CATEGORY
+- Electronics: Rs. 10,018,280.00
+- Furniture: Rs. 1,453,690.00
+- Accessories: Rs. 816,620.00
+- Stationery: Rs. 17,550.00
+
+7. UNITS SOLD BY PRODUCT
+- Wireless Mouse: 179 units
+- Keyboard: 170 units
+- Monitor: 155 units
+- Laptop: 120 units
+- Headphones: 117 units
+- Office Chair: 113 units
+- Notebook: 102 units
+- USB-C Hub: 102 units
+- Webcam: 98 units
+- Desk Lamp: 80 units
+
+8. DATA QUALITY
+- No missing values found.
+
+9. INSIGHTS
+- Laptop is the strongest product by revenue.
+- North is the highest-revenue region with Rs. 4,723,985.00.
+- Electronics is the highest-revenue category with Rs. 10,018,280.00.
+- The average customer rating is 4.07/5.
+- Revenue varies by about Rs. 220,790.79 from the mean, based on the standard deviation.
