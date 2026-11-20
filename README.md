@@ -1,74 +1,101 @@
-# Shorya Pratap Singh Chandrawat
+# My Projects & Experiments
 
-**AI/ML undergraduate at SRM University–AP | Software Developer | Exploring Quantum Computing**
+Welcome to my project collection! This repository is a personal space where I keep track of things I build, learn, try out, and explore.
 
-I build and document software across applied AI/ML, full-stack development, browser-based analytics, and quantum-computing experiments. My focus is on making projects understandable and reproducible: clear setup instructions, measured results, tests, and honest limitations.
+Not everything here is meant to be a finished product. Some projects are made for **college coursework and learning**, some come from **hackathons or team activities**, and others are simply things I wanted to build in my free time because they seemed interesting.
 
-- 🎓 **Currently studying:** Computer Engineering (AI/ML), SRM University–AP
-- 🧠 **Interests:** Applied AI/ML, software engineering, full-stack development, and quantum computing
-- 🛠️ **Currently strengthening:** Python, C++, data structures and algorithms, and practical machine learning
-- 🤝 **Open to:** Student collaborations, hackathons, learning opportunities, and software/AI internships
+You'll find a mix of experiments, prototypes, research work, small applications, games, and larger projects. Some are more complete than others, and I may revisit, improve, or expand them as I learn new things.
 
-## Featured projects
+## What's in this repository?
 
-### [QFF 2026 — Quantum VQE Simulation](https://github.com/ShoryaPratapSinghChandrawat/qff2026-phase1-s1-ising_chain)
-A Qiskit Fall Fest team project studying the ground state of a transverse-field Ising chain using exact reference calculations and VQE-based simulation.
+| Category | What it includes |
+|---|---|
+| 🎓 College & learning work | Coursework, practice projects, and concepts explored while studying |
+| 🛠️ Personal / free-time builds | Things I build out of curiosity or to try a new idea or technology |
+| 🚀 Hackathon projects | Team projects, prototypes, and ideas developed during competitions or events |
+| 🔬 Research & technical experiments | AI/ML, quantum computing, data analysis, and other technical explorations |
+| 🎮 Creative experiments | Games, browser applications, and projects built just for fun |
 
-- **Stack:** Python, Qiskit, Jupyter, numerical optimisation
-- **Focus:** Hamiltonian construction, VQE experiments, processor-connectivity/resource comparisons, noise simulation, and reproducibility checks
-- **Scope:** Simulation and research project; no quantum-hardware execution or quantum-advantage claim is made.
+## Selected projects
 
-### [Doorway Relay](https://github.com/ShoryaPratapSinghChandrawat/doorway-relay)
+These are some of the larger projects and experiments in this collection. The links below lead to their individual repositories or folders, where you'll find their own documentation, setup instructions, and implementation details.
+
+### 1. [MerchantShield AI](https://github.com/ShoryaPratapSinghChandrawat/MerchantShield-AI)
+A sandbox-first prototype exploring merchant dispute prevention and evidence management.
+
+- **Technologies:** Python, FastAPI, React, TypeScript, PayPal Sandbox, Gemini
+- **What I explored:** Evidence checklists, risk explanations, human-approved action proposals, response drafts, and audit trails
+- **Context:** Hackathon / product-building project
+- **Note:** Sandbox and simulated records are labelled; this is not a live payment-processing product.
+
+### 2. [Doorway Relay](https://github.com/ShoryaPratapSinghChandrawat/doorway-relay)
 A full-stack event and handoff management application for shared spaces.
 
-- **Stack:** React, TypeScript, Node.js, Express, SQLite
-- **Work includes:** REST API, persistence and migrations, authentication, CSRF protections, rate limiting, tests, and a local event simulator
-- **Status:** Local engineering candidate. The live Ring integration path is not verified by the evidence currently documented in the repository.
+- **Technologies:** React, TypeScript, Node.js, Express, SQLite
+- **What I explored:** APIs, authentication, persistence, migrations, security protections, tests, and local event simulation
+- **Context:** Personal software project / engineering practice
+- **Note:** The repository documents the limits of the currently verified integration path.
 
-### [MerchantShield AI](https://github.com/ShoryaPratapSinghChandrawat/MerchantShield-AI)
-A sandbox-first merchant dispute-prevention and evidence-management prototype built for the PayPal AI Hackathon.
+### 3. [AudioGuard — Spoofed Speech Detection](https://github.com/ShoryaPratapSinghChandrawat/audioguard-deepfake-audio-detection)
+A research-oriented project exploring the detection of spoofed speech using the ASVspoof 2019 Logical Access dataset.
 
-- **Stack:** Python, FastAPI, React, TypeScript, PayPal Sandbox, Gemini integration
-- **Work includes:** Evidence checklists, risk explanations, human-approved action proposals, dispute-response drafts, provenance labels, and an audit trail
-- **Safety boundary:** Demo and simulated records are labelled; the project does not move real money or claim production PayPal integration.
+- **Technologies:** Python, MFCC, SVM, Log-Mel CNN
+- **What I explored:** Feature extraction, model training, evaluation metrics, and robustness
+- **Context:** AI/ML learning and research experiment
+- **Note:** Reported metrics apply to the documented dataset and evaluation setup.
 
-### [AudioGuard — Spoofed Speech Detection](https://github.com/ShoryaPratapSinghChandrawat/audioguard-deepfake-audio-detection)
-A reproducible research workspace evaluating spoofed-speech detection on the ASVspoof 2019 Logical Access (LA) dataset.
+### 4. [QFF 2026 — Quantum VQE Simulation](https://github.com/ShoryaPratapSinghChandrawat/qff2026-phase1-s1-ising_chain)
+A team project exploring the ground state of a transverse-field Ising chain using exact calculations and Variational Quantum Eigensolver (VQE) simulation.
 
-- **Stack:** Python, MFCC, SVM, Log-Mel CNN
-- **Reported clean EVAL results:** Log-Mel CNN ROC-AUC 0.969237; MFCC SVM ROC-AUC 0.938992
-- **Scope:** These results apply to the documented ASVspoof 2019 LA setup, not universal deepfake detection. Robustness findings and limitations are documented separately.
+- **Technologies:** Python, Qiskit, Jupyter, numerical optimisation
+- **What I explored:** Hamiltonian construction, VQE experiments, noise simulation, and reproducibility
+- **Context:** Qiskit Fall Fest team project
+- **Note:** This work is simulation-based; it does not claim quantum-hardware execution or quantum advantage.
 
-### [FlipTrace — Decision Reversal Analytics](https://github.com/ShoryaPratapSinghChandrawat/FlipTrace-Decision-Reversal-Detection-Analytics-Platform)
-A browser-based tool for analysing decision histories and identifying repeated changes, reversals, and unstable decision patterns.
+### 5. [FlipTrace — Decision Reversal Analytics](https://github.com/ShoryaPratapSinghChandrawat/FlipTrace-Decision-Reversal-Detection-Analytics-Platform)
+A browser-based tool for exploring decision histories and spotting repeated changes or reversals.
 
-- **Stack:** JavaScript, browser APIs, Web Workers, IndexedDB/localStorage
-- **Work includes:** Importing supported text/JSON/CSV data, phrase-based extraction, similarity-based grouping, reversal detection, and timeline/dashboard views
-- **Approach:** Rule-based and text-similarity methods, not a deep-learning or LLM system.
+- **Technologies:** JavaScript, browser APIs, Web Workers, IndexedDB / localStorage
+- **What I explored:** Data import, text-based extraction, similarity grouping, reversal detection, and timeline views
+- **Context:** Personal product and analytics experiment
+- **Note:** The documented approach is rule-based and similarity-based, not a deep-learning or LLM system.
 
-## Other projects
+### 6. [Neon Bastion — Browser Tower Defense Game](https://github.com/ShoryaPratapSinghChandrawat/Projects/tree/main/neon-bastion-tower-defense)
+A browser-based tower defense game.
 
-### [Neon Bastion — Browser Tower Defense Game](https://github.com/ShoryaPratapSinghChandrawat/Projects/tree/main/neon-bastion-tower-defense)
-A browser game built with HTML, CSS, JavaScript, Canvas, and Web Audio, featuring multiple maps, upgradeable towers, varied enemies, and boss encounters.
+- **Technologies:** HTML, CSS, JavaScript, Canvas, Web Audio
+- **What I explored:** Game loops, maps, enemies, tower upgrades, and browser-based audio
+- **Context:** Creative / free-time build
 
-- **Campus Weave:** An early AI-powered campus-assistant prototype developed during a short hackathon. It is an exploration, not a completed campus platform.
+### 7. [Campus Weave](#)
+An early AI-powered campus-assistant prototype explored during a short hackathon.
 
-## Hackathon experience
+- **Context:** Hackathon experiment
+- **Status:** Early prototype; not a completed campus platform.
 
-- **IBM Qiskit Fall Fest 2026:** Team project on VQE-based simulation of a transverse-field Ising model; listed as a Phase 2 finalist.
+## Hackathons & activities
+
+- **IBM Qiskit Fall Fest 2026:** Team project involving VQE-based simulation of a transverse-field Ising model; listed as a Phase 2 finalist.
 - **Amazon Hackathon:** Top 100, as listed on my LinkedIn profile.
 
-## Technologies
+## How to explore
 
-**Languages:** Python · C++ · JavaScript · TypeScript · HTML · CSS  
-**Frameworks & tools:** React · Node.js · Express · FastAPI · SQLite · Git · GitHub · Qiskit  
-**Areas:** Applied AI/ML · Full-stack development · Quantum-computing experiments · Browser-based applications
+- Open an individual project link to view its source code, README, setup steps, and current status.
+- Check the project description before running anything; dependencies and requirements vary.
+- Some projects are prototypes or experiments and may not be production-ready.
+- Feel free to explore, learn from the code, or share constructive feedback.
+
+## A little about how I build
+
+I like learning by making things. That means trying unfamiliar tools, turning class concepts into small programs, joining hackathons, experimenting with ideas, and improving projects as I understand more.
+
+This repository is a record of that process—not a claim that every experiment is perfect or complete.
 
 ## Find me
 
-- **LinkedIn:** [linkedin.com/in/shorya-pratap-singh-chandrawat-188296436](https://www.linkedin.com/in/shorya-pratap-singh-chandrawat-188296436/)
-- **GitHub:** [github.com/ShoryaPratapSinghChandrawat](https://github.com/ShoryaPratapSinghChandrawat)
+- **GitHub:** [ShoryaPratapSinghChandrawat](https://github.com/ShoryaPratapSinghChandrawat)
+- **LinkedIn:** [Shorya Pratap Singh Chandrawat](https://www.linkedin.com/in/shorya-pratap-singh-chandrawat-188296436/)
 
 ---
 
-*I value clear documentation, reproducible work, thoughtful experimentation, and honest descriptions of what a project does—and does not—do.*
+*Built while learning, experimenting, collaborating, and occasionally just having fun with code.*
