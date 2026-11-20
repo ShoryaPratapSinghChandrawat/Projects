@@ -1,46 +1,19 @@
 # CSV Insight Analyzer
 
-A beginner-friendly Python project that reads a CSV sales dataset, cleans and processes the data, calculates useful statistics with NumPy, groups information using dictionaries, and generates a readable insights report.
+A beginner-friendly Python mini project that reads a CSV dataset, processes its contents, calculates useful statistics, and produces a simple text report.
 
-## Project Requirements
+This project is part of my personal project collection. It is a hands-on exercise in Python file handling, functions, loops, lists, dictionaries, and basic NumPy operations.
 
-This project covers all seven checklist items:
+## Project folder
 
-- [x] Choose a CSV dataset
-- [x] Read the CSV using Python
-- [x] Clean/process the data
-- [x] Calculate at least five useful statistics
-- [x] Organize the code into functions
-- [x] Upload the project to GitHub
-- [x] Write a README with execution instructions
+The project is stored in:
 
-## Features
+`python-date-processing-mini-project/`
 
-The program:
-
-1. Reads `data/sales_data.csv` using Python's built-in `csv` module.
-2. Converts numeric CSV values into `int`/`float`.
-3. Skips invalid or incomplete rows.
-4. Calculates revenue after discount.
-5. Uses NumPy for:
-   - sum
-   - mean
-   - median
-   - maximum
-   - minimum
-   - standard deviation
-6. Uses lists and dictionaries to organize the data.
-7. Uses loops to process rows and grouped results.
-8. Finds the highest-revenue product.
-9. Finds the best-rated product.
-10. Calculates revenue by region and category.
-11. Counts missing values.
-12. Saves the final analysis to `output/insights_report.txt`.
-
-## Project Structure
+## Folder structure
 
 ```text
-csv-insight-analyzer/
+python-date-processing-mini-project/
 │
 ├── data/
 │   └── sales_data.csv
@@ -54,159 +27,127 @@ csv-insight-analyzer/
 └── .gitignore
 ```
 
+- **`data/`** — input CSV dataset(s) used by the program.
+- **`output/`** — generated reports and processed results.
+- **`main.py`** — Python program that reads, cleans, analyses, and reports on the CSV data.
+- **`requirements.txt`** — Python package dependencies.
+- **`.gitignore`** — files and folders Git should ignore.
+
+## What the program does
+
+1. Reads `data/sales_data.csv` using Python's built-in `csv` module.
+2. Converts numeric CSV fields into suitable Python number types.
+3. Skips rows with invalid numeric values or missing required fields.
+4. Calculates each sale's revenue after discount.
+5. Uses NumPy to calculate the sum, mean, median, minimum, maximum, and standard deviation of numeric data.
+6. Uses loops and dictionaries to group revenue by product, category, and region.
+7. Identifies the highest-revenue product and the best-rated product.
+8. Checks for missing values.
+9. Saves a human-readable summary to `output/insights_report.txt`.
+
+## Dataset columns
+
+The sample sales dataset uses these columns:
+
+| Column | Description |
+|---|---|
+| `date` | Date of the sale |
+| `product` | Product name |
+| `category` | Product category |
+| `region` | Sales region |
+| `units_sold` | Number of units sold |
+| `unit_price` | Price per unit |
+| `discount_pct` | Discount percentage |
+| `customer_rating` | Customer rating |
+
 ## Requirements
 
-- Python 3.9+
+- Python 3.9 or newer
 - NumPy
 
-## Installation
+## Setup and execution
 
-Open a terminal inside the project folder.
+Open a terminal in the `python-date-processing-mini-project` folder.
 
 ### 1. Create a virtual environment (recommended)
 
-Windows:
+**Windows:**
 
 ```bash
 python -m venv venv
-venv\Scripts\activate
+venv\\Scripts\\activate
 ```
 
-macOS/Linux:
+**macOS / Linux:**
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
 
-### 2. Install NumPy
+### 2. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## Run the Program
-
-From the project root:
+### 3. Run the program
 
 ```bash
 python main.py
 ```
 
-The program will read:
+The program reads the CSV from `data/sales_data.csv`, prints the analysis in the terminal, and writes the report to `output/insights_report.txt`.
 
-```text
-data/sales_data.csv
-```
+## Main statistics and insights
 
-and generate:
+The sample analysis calculates:
 
-```text
-output/insights_report.txt
-```
-
-The main insights are also printed in the terminal.
-
-## Example Analysis
-
-The program calculates more than five statistics, including:
-
-- Total revenue
-- Total units sold
+- Total revenue and total units sold
 - Average units per sale
 - Median unit price
 - Average customer rating
-- Highest single-sale revenue
-- Lowest single-sale revenue
+- Highest and lowest single-sale revenue
 - Revenue standard deviation
-
-It also produces grouped insights such as:
-
-- Revenue by region
-- Revenue by category
-- Units sold by product
+- Revenue grouped by region and category
+- Units sold grouped by product
 - Highest-revenue product
 - Best-rated product
 - Missing-value counts
 
-## How the Code Works
+## Code organization
 
-### `read_csv()`
+The program is split into functions so each part has a clear responsibility:
 
-Reads the CSV file and stores every row as a dictionary.
+| Function | Purpose |
+|---|---|
+| `read_csv()` | Reads the CSV file into a list of dictionaries |
+| `clean_data()` | Converts numeric fields and skips invalid rows |
+| `calculate_revenue()` | Calculates discounted revenue for a row |
+| `add_revenue()` | Adds calculated revenue to each row |
+| `calculate_statistics()` | Uses NumPy to calculate overall statistics |
+| `group_revenue()` | Totals revenue by a selected column |
+| `group_units()` | Totals units sold by a selected column |
+| `build_report()` | Builds the final text report |
+| `save_report()` | Saves the report in the output folder |
+| `main()` | Runs the complete analysis workflow |
 
-### `clean_data()`
+## Using another CSV file
 
-Converts values such as units sold and prices from strings into numbers and removes invalid rows.
+You can replace `data/sales_data.csv` with your own sales dataset. Keep the expected column names listed above, or update the field names used in `main.py` to match your file.
 
-### `calculate_revenue()`
+## Learning goals
 
-Calculates:
+This mini project gives practice with:
 
-```text
-revenue = units_sold × unit_price × (1 - discount/100)
-```
+- Reading files and processing CSV data
+- Writing reusable functions
+- Using loops, lists, and dictionaries
+- Cleaning and converting data
+- Creating NumPy arrays
+- Performing basic statistical operations
+- Generating a report from program results
 
-### `calculate_statistics()`
+---
 
-Creates NumPy arrays and uses NumPy operations such as `np.sum()`, `np.mean()`, `np.median()`, `np.max()`, `np.min()`, and `np.std()`.
-
-### `group_revenue()`
-
-Uses a dictionary to add revenue for each region, category, or product.
-
-### `build_report()`
-
-Combines all calculated results into a human-readable report.
-
-## Customizing the Dataset
-
-You can replace `data/sales_data.csv` with another CSV if it contains the columns used by the program:
-
-```text
-date
-product
-category
-region
-units_sold
-unit_price
-discount_pct
-customer_rating
-```
-
-If you change the column names, update the corresponding field names in `main.py`.
-
-## GitHub Upload
-
-After testing the program:
-
-```bash
-git init
-git add .
-git commit -m "Add CSV insight analyzer"
-git branch -M main
-git remote add origin YOUR_GITHUB_REPOSITORY_URL
-git push -u origin main
-```
-
-Replace `YOUR_GITHUB_REPOSITORY_URL` with the URL of your GitHub repository.
-
-## Learning Outcomes
-
-This project demonstrates:
-
-- Python file handling
-- CSV processing
-- Functions
-- Loops
-- Lists
-- Dictionaries
-- Data cleaning
-- NumPy arrays
-- Statistical calculations
-- Report generation
-- Git and GitHub basics
-
-## License
-
-This project is intended for educational use.
+*Built as a practical Python learning project to explore data processing and basic analysis.*
