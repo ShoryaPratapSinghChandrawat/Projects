@@ -2,14 +2,14 @@
 
 A curated collection of coursework, personal builds, hackathon work, research experiments, and creative projects.
 
-My main interests are **applied AI/ML and full-stack engineering**, with additional experiments in quantum computing and browser-based applications. Not every project is a finished product; each repository or folder documents its current scope and setup.
+My main interests are **applied AI/ML, full-stack engineering, and secure application design**, with additional research experiments in audio spoofing detection and quantum simulation. Not every project is a finished product; each repository or folder documents its current scope and setup.
 
 ## Featured work
 
 | Project | What it explores | Technologies | Context |
 |---|---|---|---|
 | [MerchantShield AI](https://github.com/ShoryaPratapSinghChandrawat/MerchantShield-AI) | Sandbox-first merchant dispute workflows, evidence provenance, explainable risk rules, human-approved actions, and audit trails | Python, FastAPI, React, TypeScript, PayPal Sandbox, Gemini | Hackathon / product prototype |
-| [Doorway Relay](https://github.com/ShoryaPratapSinghChandrawat/doorway-relay) | Full-stack event management and accountable handoffs, with authentication, persistence, security controls, and local simulation | React, TypeScript, Node.js, Express, SQLite | Personal software project |
+| [Doorway Relay](https://github.com/ShoryaPratapSinghChandrawat/doorway-relay) | Full-stack event management and accountable handoffs, with authentication, persistence, CSRF protection, rate limiting, and local event simulation | React, TypeScript, Node.js, Express, SQLite | Personal software project |
 | [AudioGuard](https://github.com/ShoryaPratapSinghChandrawat/audioguard-deepfake-audio-detection) | Spoofed-speech detection experiments, model evaluation, error analysis, and robustness checks | Python, MFCC, SVM, Log-Mel CNN | AI/ML research experiment |
 | [QFF 2026 — Quantum VQE](https://github.com/ShoryaPratapSinghChandrawat/qff2026-phase1-s1-ising_chain) | Transverse-field Ising simulation, VQE, exact-reference validation, processor topology, and synthetic noise analysis | Python, Qiskit, numerical optimisation | Qiskit Fall Fest team project |
 | [FlipTrace](https://github.com/ShoryaPratapSinghChandrawat/FlipTrace-Decision-Reversal-Detection-Analytics-Platform) | Browser-based decision-history import, topic grouping, reversal detection, timelines, and exports | JavaScript, Web Workers, IndexedDB | Personal product experiment |
